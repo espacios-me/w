@@ -1,0 +1,1426 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Espacios — AI Growth & Messaging Automation</title>
+    <meta
+      name="description"
+      content="Espacios runs lead generation and instant qualification so your pipeline fills with buyers, not noise."
+    />
+    <meta name="theme-color" content="#E6E9ED" />
+    <style>
+      :root {
+        --page-bg: #e6e9ed;
+        --surface: rgba(255, 255, 255, 0.52);
+        --surface-strong: rgba(255, 255, 255, 0.74);
+        --border: rgba(255, 255, 255, 0.76);
+        --text: #0f0f10;
+        --muted: rgba(15, 15, 16, 0.72);
+        --muted-2: rgba(15, 15, 16, 0.6);
+
+        --accent-deep: #0b3d1a;
+        --accent-dark: #0f5b25;
+        --accent-mid: #1f8a3a;
+        --accent: #9bf24f;
+        --accent-light: #c7ff74;
+        --accent-gradient: linear-gradient(120deg, var(--accent-mid), var(--accent), var(--accent-light));
+
+        --shadow-xl: 0 40px 120px rgba(0, 0, 0, 0.12), 0 16px 48px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 16px 40px rgba(0, 0, 0, 0.08);
+        --shadow-sm: 0 8px 20px rgba(0, 0, 0, 0.06);
+
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        --font: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display", Inter, sans-serif;
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; }
+      body {
+        font-family: var(--font);
+        color: var(--text);
+        background:
+          radial-gradient(1000px 600px at 15% 10%, rgba(255, 255, 255, 0.72), transparent 55%),
+          radial-gradient(820px 520px at 85% 15%, rgba(255, 255, 255, 0.55), transparent 55%),
+          radial-gradient(720px 420px at 50% 92%, rgba(155, 242, 79, 0.14), transparent 60%),
+          linear-gradient(165deg, #eef1f5 0%, #e4e7eb 45%, #d9dee4 100%);
+        min-height: 100vh;
+        overflow-x: hidden;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      a { color: inherit; text-decoration: none; }
+      img { max-width: 100%; height: auto; display: block; }
+
+      @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.55; transform: scale(0.9); }
+      }
+
+      .orbs {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .orb {
+        position: absolute;
+        border-radius: 999px;
+        filter: blur(44px);
+        opacity: 0.42;
+        mix-blend-mode: soft-light;
+      }
+      .orb.o1 {
+        width: min(52vw, 620px);
+        height: min(52vw, 620px);
+        left: -16%;
+        top: -22%;
+        background:
+          radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.9), transparent 52%),
+          radial-gradient(circle at 60% 70%, rgba(155, 242, 79, 0.25), transparent 58%),
+          radial-gradient(circle at 50% 50%, rgba(147, 197, 253, 0.14), transparent 62%);
+      }
+      .orb.o2 {
+        width: min(46vw, 560px);
+        height: min(46vw, 560px);
+        right: -18%;
+        top: -10%;
+        background:
+          radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.85), transparent 50%),
+          radial-gradient(circle at 62% 72%, rgba(196, 181, 253, 0.2), transparent 56%),
+          radial-gradient(circle at 50% 50%, rgba(155, 242, 79, 0.18), transparent 62%);
+      }
+      .orb.o3 {
+        width: min(62vw, 720px);
+        height: min(62vw, 720px);
+        left: 18%;
+        bottom: -36%;
+        background:
+          radial-gradient(circle at 45% 45%, rgba(255, 255, 255, 0.8), transparent 52%),
+          radial-gradient(circle at 55% 55%, rgba(155, 242, 79, 0.22), transparent 58%),
+          radial-gradient(circle at 60% 40%, rgba(147, 197, 253, 0.12), transparent 62%);
+      }
+
+      .container,
+      .section {
+        width: min(1200px, calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      .site-header {
+        position: sticky;
+        top: 18px;
+        z-index: 30;
+        display: flex;
+        justify-content: center;
+        padding: 18px 20px 0;
+      }
+      .header-inner {
+        width: min(1200px, calc(100% - 40px));
+        background: rgba(255, 255, 255, 0.74);
+        border: 1px solid rgba(255, 255, 255, 0.82);
+        border-radius: 18px;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 12px 16px;
+      }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 950;
+        letter-spacing: -0.01em;
+        font-size: 14px;
+        color: var(--text);
+        flex: 0 0 auto;
+      }
+      .brand-logo {
+        width: 30px;
+        height: 30px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.62);
+        border: 1px solid rgba(255, 255, 255, 0.78);
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.06);
+      }
+      .brand-logo img {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+      }
+      .site-nav {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 13px;
+        font-weight: 800;
+        color: rgba(15, 15, 16, 0.7);
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .site-nav a,
+      .footer-col a,
+      .footer-col p {
+        transition: color 0.25s var(--ease), background 0.25s var(--ease), transform 0.25s var(--ease);
+      }
+      .site-nav a {
+        padding: 8px 8px;
+        border-radius: 10px;
+      }
+      .site-nav a:hover {
+        color: rgba(15, 15, 16, 0.92);
+        background: rgba(255, 255, 255, 0.55);
+      }
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 0 0 auto;
+      }
+      .header-link,
+      .btn-secondary {
+        font-size: 12px;
+        font-weight: 900;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        color: rgba(15, 15, 16, 0.82);
+      }
+      .header-link:hover,
+      .btn-secondary:hover {
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, 0.65);
+      }
+      .header-cta,
+      .btn-primary {
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 950;
+        background: var(--accent-gradient);
+        background-size: 200% 200%;
+        animation: gradientShift 8s ease infinite;
+        color: rgba(255, 255, 255, 0.96);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
+        box-shadow: 0 12px 28px rgba(31, 138, 58, 0.16);
+      }
+      .header-cta:hover,
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 16px 36px rgba(31, 138, 58, 0.22);
+      }
+
+      main {
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-wrap {
+        padding: 58px 0 36px;
+      }
+      .hero-card {
+        background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.32));
+        border: 1px solid var(--border);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-radius: 30px;
+        box-shadow: var(--shadow-lg);
+        padding: 52px;
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.45);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        font-size: 12px;
+        font-weight: 850;
+        color: rgba(15, 15, 16, 0.72);
+        backdrop-filter: blur(12px);
+        box-shadow: var(--shadow-sm);
+      }
+      .badge-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--accent-gradient);
+        background-size: 200% 200%;
+        animation: gradientShift 6s ease infinite, pulse 2s ease-in-out infinite;
+      }
+      .hero-title {
+        font-size: clamp(42px, 6.2vw, 70px);
+        font-weight: 980;
+        line-height: 1.02;
+        letter-spacing: -0.03em;
+        margin-top: 18px;
+        max-width: 920px;
+      }
+      .highlight {
+        background: linear-gradient(120deg, var(--accent-light) 0%, var(--accent) 30%, var(--accent-mid) 60%, var(--accent-deep) 100%);
+        background-size: 320% 320%;
+        animation: gradientShift 10s ease infinite;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .hero-sub {
+        font-size: 18px;
+        color: rgba(15, 15, 16, 0.72);
+        max-width: 760px;
+        line-height: 1.75;
+        margin-top: 16px;
+      }
+      .hero-ctas {
+        margin-top: 28px;
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+      .btn-primary,
+      .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        padding: 14px 18px;
+        box-shadow: var(--shadow-sm);
+      }
+      .logo-strip {
+        margin-top: 30px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+      }
+      .logo-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 38px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.46);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.05);
+        backdrop-filter: blur(12px);
+      }
+      .logo-chip img {
+        height: 18px;
+        width: auto;
+        max-width: 190px;
+        object-fit: contain;
+      }
+      .logo-chip.icon {
+        width: 40px;
+        padding: 6px;
+      }
+      .logo-chip.icon img {
+        height: 20px;
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 28px;
+      }
+      .metric {
+        padding: 22px;
+        border-radius: 20px;
+        background: rgba(255,255,255,0.44);
+        border: 1px solid rgba(255,255,255,0.7);
+        box-shadow: var(--shadow-sm);
+      }
+      .metric strong {
+        display: block;
+        font-size: 28px;
+        line-height: 1;
+        margin-bottom: 6px;
+      }
+      .metric span {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .section-block {
+        padding: 14px 0 18px;
+      }
+      .section-shell {
+        border-radius: 28px;
+        background: rgba(255,255,255,0.38);
+        border: 1px solid rgba(255,255,255,0.72);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: var(--shadow-md);
+        padding: 34px;
+      }
+      .section-kicker {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.52);
+        border: 1px solid rgba(255,255,255,0.75);
+        font-size: 12px;
+        font-weight: 850;
+        color: var(--muted);
+      }
+      .section-title {
+        font-size: clamp(28px, 3vw, 44px);
+        line-height: 1.08;
+        letter-spacing: -0.025em;
+        margin-top: 14px;
+        font-weight: 950;
+      }
+      .section-copy {
+        margin-top: 12px;
+        color: var(--muted);
+        max-width: 760px;
+        font-size: 17px;
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 26px;
+      }
+      .card {
+        padding: 22px;
+        border-radius: 20px;
+        background: rgba(255,255,255,0.48);
+        border: 1px solid rgba(255,255,255,0.72);
+        box-shadow: var(--shadow-sm);
+      }
+      .card h3 {
+        font-size: 18px;
+        font-weight: 900;
+        margin-bottom: 8px;
+      }
+      .card p,
+      .card li,
+      .faq-item p {
+        color: var(--muted);
+        font-size: 15px;
+      }
+      .card ul {
+        padding-left: 18px;
+        margin-top: 10px;
+      }
+      .card li + li {
+        margin-top: 6px;
+      }
+
+      .pricing-grid,
+      .testimonial-grid,
+      .faq-grid {
+        display: grid;
+        gap: 16px;
+        margin-top: 26px;
+      }
+      .pricing-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .testimonial-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .faq-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+      .price-card {
+        padding: 24px;
+        border-radius: 22px;
+        background: rgba(255,255,255,0.52);
+        border: 1px solid rgba(255,255,255,0.76);
+        box-shadow: var(--shadow-sm);
+      }
+      .price-card.featured {
+        background: linear-gradient(180deg, rgba(199,255,116,0.34), rgba(255,255,255,0.62));
+        transform: translateY(-4px);
+      }
+      .price-card h3 {
+        font-size: 20px;
+        font-weight: 950;
+      }
+      .price {
+        margin-top: 8px;
+        font-size: 34px;
+        font-weight: 980;
+        line-height: 1;
+      }
+      .price small {
+        font-size: 14px;
+        color: var(--muted);
+      }
+      .price-card ul {
+        margin-top: 16px;
+        padding-left: 18px;
+        color: var(--muted);
+      }
+      .price-card li + li {
+        margin-top: 8px;
+      }
+
+      .lead-estimator {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 16px;
+        margin-top: 26px;
+      }
+      .estimate-box {
+        padding: 24px;
+        border-radius: 22px;
+        background: rgba(255,255,255,0.5);
+        border: 1px solid rgba(255,255,255,0.74);
+        box-shadow: var(--shadow-sm);
+      }
+      .estimate-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0,1fr));
+        gap: 14px;
+        margin-top: 18px;
+      }
+      .estimate-grid label {
+        display: block;
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .estimate-grid input,
+      .estimate-grid select {
+        width: 100%;
+        padding: 14px;
+        border-radius: 14px;
+        border: 1px solid rgba(15,15,16,0.08);
+        background: rgba(255,255,255,0.9);
+        font: inherit;
+      }
+      .estimate-output {
+        display: grid;
+        gap: 14px;
+      }
+      .estimate-stat {
+        padding: 18px;
+        border-radius: 18px;
+        background: rgba(255,255,255,0.62);
+        border: 1px solid rgba(255,255,255,0.82);
+      }
+      .estimate-stat strong {
+        display: block;
+        font-size: 30px;
+        line-height: 1;
+      }
+      .estimate-stat span {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .testimonial,
+      .faq-item {
+        padding: 22px;
+        border-radius: 20px;
+        background: rgba(255,255,255,0.48);
+        border: 1px solid rgba(255,255,255,0.72);
+        box-shadow: var(--shadow-sm);
+      }
+      .testimonial strong,
+      .faq-item h3 {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 17px;
+        font-weight: 900;
+      }
+
+      .cta-banner {
+        margin: 24px 0 0;
+        padding: 28px;
+        border-radius: 24px;
+        background: linear-gradient(140deg, rgba(15,91,37,0.9), rgba(31,138,58,0.82), rgba(155,242,79,0.72));
+        color: white;
+        box-shadow: var(--shadow-lg);
+      }
+      .cta-banner h2 {
+        font-size: clamp(28px, 4vw, 46px);
+        line-height: 1.05;
+        font-weight: 980;
+      }
+      .cta-banner p {
+        margin-top: 10px;
+        max-width: 760px;
+        color: rgba(255,255,255,0.88);
+        font-size: 16px;
+      }
+      .cta-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 18px;
+      }
+      .cta-banner .btn-secondary {
+        background: rgba(255,255,255,0.16);
+        border-color: rgba(255,255,255,0.24);
+        color: white;
+      }
+      .cta-banner .btn-secondary:hover {
+        background: rgba(255,255,255,0.24);
+      }
+
+      footer {
+        background: rgba(255, 255, 255, 0.12);
+        border-top: 1px solid rgba(255, 255, 255, 0.65);
+        padding: 56px 0;
+        margin-top: 40px;
+      }
+      .footer-content {
+        width: min(1200px, calc(100% - 40px));
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 34px;
+      }
+      .footer-col h4 {
+        font-weight: 950;
+        margin-bottom: 14px;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: rgba(15, 15, 16, 0.8);
+      }
+      .footer-col a,
+      .footer-col p {
+        font-size: 14px;
+        color: rgba(15, 15, 16, 0.7);
+        margin-bottom: 10px;
+        display: block;
+      }
+      .footer-col a:hover { color: rgba(15, 15, 16, 0.95); }
+      .footer-bottom {
+        width: min(1200px, calc(100% - 40px));
+        margin: 0 auto;
+        padding-top: 28px;
+        border-top: 1px solid rgba(255, 255, 255, 0.65);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        font-size: 13px;
+        color: rgba(15, 15, 16, 0.62);
+      }
+
+      body.is-modal-open { overflow: hidden; }
+      .footer-col .legal-trigger {
+        background: transparent;
+        border: 0;
+        padding: 0;
+        font: inherit;
+        cursor: pointer;
+        text-align: left;
+        font-size: 14px;
+        color: rgba(15, 15, 16, 0.68);
+        margin-bottom: 10px;
+        display: block;
+      }
+      .footer-col .legal-trigger:hover { color: rgba(15, 15, 16, 0.95); }
+      .footer-col .legal-trigger:focus-visible,
+      .estimate-grid input:focus-visible,
+      .estimate-grid select:focus-visible,
+      a:focus-visible,
+      button:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+        border-radius: 10px;
+      }
+
+      .legal-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 3000;
+        padding: 22px 18px;
+        display: grid;
+        place-items: center;
+        background: rgba(15, 15, 16, 0.55);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.25s var(--ease), visibility 0.25s var(--ease);
+      }
+      .legal-modal.is-open {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+      .legal-modal__panel {
+        width: min(920px, 100%);
+        max-height: min(82vh, 760px);
+        overflow: auto;
+        position: relative;
+        padding: 22px 22px 20px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid rgba(255, 255, 255, 0.85);
+        box-shadow: var(--shadow-xl);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+      }
+      .legal-modal__close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 40px;
+        height: 40px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        background: rgba(255, 255, 255, 0.6);
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        font-size: 22px;
+        color: rgba(15, 15, 16, 0.75);
+      }
+      .legal-modal h2 {
+        font-size: 28px;
+        font-weight: 950;
+        letter-spacing: -0.015em;
+        margin-right: 54px;
+        margin-bottom: 8px;
+      }
+      .legal-modal__meta {
+        font-size: 13px;
+        color: rgba(15, 15, 16, 0.62);
+        margin-bottom: 18px;
+      }
+      .legal-modal h3 {
+        margin-top: 18px;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: rgba(15, 15, 16, 0.78);
+      }
+      .legal-modal p,
+      .legal-modal li {
+        font-size: 14px;
+        color: rgba(15, 15, 16, 0.78);
+        line-height: 1.75;
+      }
+      .legal-modal p + p { margin-top: 10px; }
+      .legal-modal ul { padding-left: 18px; margin-top: 8px; }
+      .legal-modal li + li { margin-top: 6px; }
+      .legal-modal a {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+
+      @media (max-width: 980px) {
+        .header-inner {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        .header-actions {
+          width: 100%;
+          justify-content: center;
+        }
+        .hero-card,
+        .section-shell {
+          padding: 28px;
+        }
+        .cards,
+        .pricing-grid,
+        .testimonial-grid,
+        .metrics,
+        .lead-estimator {
+          grid-template-columns: 1fr;
+        }
+        .faq-grid,
+        .estimate-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="orbs" aria-hidden="true">
+      <div class="orb o1"></div>
+      <div class="orb o2"></div>
+      <div class="orb o3"></div>
+    </div>
+
+    <header class="site-header" aria-label="Site header">
+      <div class="header-inner">
+        <a class="brand" data-haptic href="#rec1481907021">
+          <span class="brand-logo" aria-hidden="true">
+            <img src="https://i.imghippo.com/files/oq5239jU.png" alt="" decoding="async" loading="lazy" />
+          </span>
+          <span>Espacios</span>
+        </a>
+
+        <nav class="site-nav" aria-label="Primary">
+          <a data-haptic href="#rec1773465011">Campaign gallery</a>
+          <a data-haptic href="#rec1773478851">What we do</a>
+          <a data-haptic href="#rec1773481641">How it works</a>
+          <a data-haptic href="#rec1773490431">Pricing</a>
+          <a data-haptic href="#rec1773667631">FAQ</a>
+        </nav>
+
+        <div class="header-actions">
+          <a class="header-link" data-haptic href="#rec1773650671">Lead estimator</a>
+          <a
+            class="header-cta"
+            data-haptic
+            href="https://wa.me/971523709989?text=Hi%20Espacios%2C%20I%20want%20to%20discuss%20setup%20and%20pricing."
+            rel="noopener"
+            target="_blank"
+          >
+            Start on WhatsApp
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="section hero-wrap" id="rec1481907021">
+        <div class="hero-card">
+          <div class="hero-badge">
+            <span class="badge-dot" aria-hidden="true"></span>
+            AI Growth &amp; Messaging Automation
+          </div>
+
+          <h1 class="hero-title">
+            Download <span class="highlight">Super Qualified Leads</span><br />
+            in less than a Day
+          </h1>
+
+          <p class="hero-sub">
+            Espacios runs lead generation + instant qualification so your pipeline fills with buyers — not noise. We connect traffic to
+            WhatsApp, qualify in minutes, and route to your team with clean data and clear next actions.
+          </p>
+
+          <div class="hero-ctas">
+            <a
+              class="btn-primary"
+              data-haptic
+              href="https://wa.me/971523709989?text=Hi%20Espacios%2C%20I%20want%20to%20discuss%20setup%20and%20pricing."
+              rel="noopener"
+              target="_blank"
+            >
+              Start on WhatsApp
+            </a>
+            <a class="btn-secondary" data-haptic href="#rec1773465011">View campaign gallery</a>
+            <a class="btn-secondary" data-haptic href="#rec1773490431">See pricing</a>
+          </div>
+
+          <div class="logo-strip" aria-label="Channels and tools">
+            <span class="logo-chip" title="Meta">
+              <img
+                alt="Meta"
+                decoding="async"
+                loading="lazy"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Meta_Platforms_Inc._logo_%28cropped%29.svg/640px-Meta_Platforms_Inc._logo_%28cropped%29.svg.png"
+              />
+            </span>
+            <span class="logo-chip icon" title="Facebook">
+              <img
+                alt="Facebook"
+                decoding="async"
+                loading="lazy"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Facebook_f_logo_%282019%29.svg/640px-Facebook_f_logo_%282019%29.svg.png"
+              />
+            </span>
+            <span class="logo-chip icon" title="Instagram">
+              <img
+                alt="Instagram"
+                decoding="async"
+                loading="lazy"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Instagram-Gradient-Logo-PNG.png/640px-Instagram-Gradient-Logo-PNG.png"
+              />
+            </span>
+            <span class="logo-chip icon" title="WhatsApp">
+              <img
+                alt="WhatsApp"
+                decoding="async"
+                loading="lazy"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/WhatsApp_Logo_green.svg/640px-WhatsApp_Logo_green.svg.png"
+              />
+            </span>
+            <span class="logo-chip icon" title="Google">
+              <img
+                alt="Google"
+                decoding="async"
+                loading="lazy"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Google_Favicon_2025.svg/640px-Google_Favicon_2025.svg.png"
+              />
+            </span>
+            <span class="logo-chip" title="HubSpot">
+              <img
+                alt="HubSpot"
+                decoding="async"
+                loading="lazy"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/HubSpot_Logo.svg/640px-HubSpot_Logo.svg.png"
+              />
+            </span>
+            <span class="logo-chip icon" title="ChatGPT">
+              <img
+                alt="ChatGPT"
+                decoding="async"
+                loading="lazy"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/ChatGPT-Logo.svg/1280px-ChatGPT-Logo.svg.png?20240214002031"
+              />
+            </span>
+            <span class="logo-chip icon" title="Gemini">
+              <img
+                alt="Gemini"
+                decoding="async"
+                loading="lazy"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Gemini_sparkle_v002.svg/640px-Gemini_sparkle_v002.svg.png"
+              />
+            </span>
+          </div>
+
+          <div class="metrics" aria-label="Outcome summary">
+            <div class="metric">
+              <strong>&lt;24h</strong>
+              <span>Launch-to-lead response window with qualification flows.</span>
+            </div>
+            <div class="metric">
+              <strong>24/7</strong>
+              <span>Automated chat qualification, routing, and follow-up coverage.</span>
+            </div>
+            <div class="metric">
+              <strong>Clean CRM</strong>
+              <span>Structured lead capture with clear next actions for sales teams.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-block" id="rec1773465011">
+        <div class="section-shell">
+          <span class="section-kicker">Campaign gallery</span>
+          <h2 class="section-title">Launch campaigns that qualify before your team even opens WhatsApp.</h2>
+          <p class="section-copy">
+            Use paid traffic, instant qualification logic, and clean routing to reduce wasted conversations and focus your team on buyers
+            who are ready for a meaningful next step.
+          </p>
+          <div class="cards">
+            <article class="card">
+              <h3>Buyer acquisition</h3>
+              <p>Meta, Instagram, Google, and landing-page flows tuned for intent, speed, and lead quality.</p>
+            </article>
+            <article class="card">
+              <h3>Qualification logic</h3>
+              <p>Automated questions, scoring, and routing rules help your team separate noise from opportunity.</p>
+            </article>
+            <article class="card">
+              <h3>Follow-up automation</h3>
+              <p>Keep warm leads moving with fast replies, reminders, and internal handoff triggers.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-block" id="rec1773478851">
+        <div class="section-shell">
+          <span class="section-kicker">What we do</span>
+          <h2 class="section-title">Growth systems for real estate, sales, and high-intent inbound teams.</h2>
+          <p class="section-copy">
+            Espacios combines messaging, qualification, and automation into a single front-end experience that turns traffic into structured,
+            actionable conversations.
+          </p>
+          <div class="cards">
+            <article class="card">
+              <h3>Lead generation</h3>
+              <ul>
+                <li>Campaign setup and testing</li>
+                <li>Channel mix for paid acquisition</li>
+                <li>Creative and landing-page alignment</li>
+              </ul>
+            </article>
+            <article class="card">
+              <h3>Instant qualification</h3>
+              <ul>
+                <li>Question trees and intent signals</li>
+                <li>Auto-tagging and routing</li>
+                <li>CRM-ready lead capture</li>
+              </ul>
+            </article>
+            <article class="card">
+              <h3>Automation ops</h3>
+              <ul>
+                <li>Follow-up reminders</li>
+                <li>Sales notifications</li>
+                <li>Reporting and pipeline visibility</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-block" id="rec1773481641">
+        <div class="section-shell">
+          <span class="section-kicker">How it works</span>
+          <h2 class="section-title">A fast handoff from click to conversation to qualified lead.</h2>
+          <div class="cards">
+            <article class="card">
+              <h3>1. Capture demand</h3>
+              <p>Ads, landing pages, and CTAs bring interested prospects into a controlled intake flow.</p>
+            </article>
+            <article class="card">
+              <h3>2. Qualify in minutes</h3>
+              <p>Automated prompts collect useful context like intent, budget, project, timing, or location.</p>
+            </article>
+            <article class="card">
+              <h3>3. Route with context</h3>
+              <p>Your team receives qualified leads with structured data and clear next actions.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-block" id="rec1773490431">
+        <div class="section-shell">
+          <span class="section-kicker">Pricing</span>
+          <h2 class="section-title">Choose a setup that matches your lead volume and operating speed.</h2>
+          <div class="pricing-grid">
+            <article class="price-card">
+              <h3>Starter</h3>
+              <div class="price">AED 2,500 <small>/ month</small></div>
+              <ul>
+                <li>Single campaign funnel</li>
+                <li>Basic qualification flow</li>
+                <li>Weekly optimization review</li>
+              </ul>
+            </article>
+            <article class="price-card featured">
+              <h3>Growth</h3>
+              <div class="price">AED 5,500 <small>/ month</small></div>
+              <ul>
+                <li>Multi-channel campaigns</li>
+                <li>Advanced qualification logic</li>
+                <li>CRM routing and team notifications</li>
+              </ul>
+            </article>
+            <article class="price-card">
+              <h3>Scale</h3>
+              <div class="price">Custom</div>
+              <ul>
+                <li>Custom automation workflows</li>
+                <li>Deeper reporting and integrations</li>
+                <li>High-volume team support</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-block" id="rec1773650671">
+        <div class="section-shell">
+          <span class="section-kicker">Cost per lead</span>
+          <h2 class="section-title">A simple lead estimator your team can use right away.</h2>
+          <p class="section-copy">Adjust the inputs to get a rough planning view for expected leads and target cost per qualified lead.</p>
+          <div class="lead-estimator">
+            <div class="estimate-box">
+              <div class="estimate-grid">
+                <div>
+                  <label for="budget">Monthly budget (AED)</label>
+                  <input id="budget" type="number" min="0" value="12000" />
+                </div>
+                <div>
+                  <label for="cpc">Estimated cost per click (AED)</label>
+                  <input id="cpc" type="number" min="0.1" step="0.1" value="6" />
+                </div>
+                <div>
+                  <label for="landing-rate">Landing to lead conversion (%)</label>
+                  <input id="landing-rate" type="number" min="1" max="100" value="12" />
+                </div>
+                <div>
+                  <label for="qualified-rate">Lead to qualified rate (%)</label>
+                  <input id="qualified-rate" type="number" min="1" max="100" value="45" />
+                </div>
+              </div>
+            </div>
+            <div class="estimate-output" aria-live="polite">
+              <div class="estimate-stat">
+                <strong id="clicks-out">0</strong>
+                <span>Projected clicks</span>
+              </div>
+              <div class="estimate-stat">
+                <strong id="leads-out">0</strong>
+                <span>Projected leads</span>
+              </div>
+              <div class="estimate-stat">
+                <strong id="qualified-out">0</strong>
+                <span>Projected qualified leads</span>
+              </div>
+              <div class="estimate-stat">
+                <strong id="cpl-out">AED 0</strong>
+                <span>Estimated cost per qualified lead</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-block" id="rec1773664951">
+        <div class="section-shell">
+          <span class="section-kicker">Testimonials</span>
+          <h2 class="section-title">Built for teams that care about speed, signal, and sales discipline.</h2>
+          <div class="testimonial-grid">
+            <article class="testimonial">
+              <strong>Sales operations lead</strong>
+              <p>“The biggest win was cleaner handoff. Our team started every conversation with context instead of guessing.”</p>
+            </article>
+            <article class="testimonial">
+              <strong>Real estate marketing manager</strong>
+              <p>“Qualification moved much faster, and we stopped spending time on low-intent inbound.”</p>
+            </article>
+            <article class="testimonial">
+              <strong>Founder, inbound team</strong>
+              <p>“We finally had one flow connecting ads, WhatsApp, and follow-up without the usual chaos.”</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-block" id="rec1773667631">
+        <div class="section-shell">
+          <span class="section-kicker">FAQ</span>
+          <h2 class="section-title">Questions teams ask before launch.</h2>
+          <div class="faq-grid">
+            <article class="faq-item">
+              <h3>How fast can we launch?</h3>
+              <p>Many teams can move quickly once assets, targeting direction, and routing rules are agreed.</p>
+            </article>
+            <article class="faq-item">
+              <h3>Do you work with WhatsApp flows?</h3>
+              <p>Yes. The site and CTAs here are designed around WhatsApp-first conversion paths and qualification.</p>
+            </article>
+            <article class="faq-item">
+              <h3>Can you connect to our CRM?</h3>
+              <p>That depends on your stack, but the page is structured to support automation and clean lead capture.</p>
+            </article>
+            <article class="faq-item">
+              <h3>Do you guarantee results?</h3>
+              <p>No. Performance varies by offer, targeting, response speed, and operational follow-through.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-block" id="rec1773670971">
+        <div class="cta-banner">
+          <h2>Ready to fill your pipeline with qualified conversations?</h2>
+          <p>Talk to Espacios about setup, qualification flows, campaign launch, and how your sales team should receive leads.</p>
+          <div class="cta-actions">
+            <a
+              class="btn-primary"
+              data-haptic
+              href="https://wa.me/971523709989?text=Hi%20Espacios%2C%20I%20want%20to%20discuss%20setup%20and%20pricing."
+              rel="noopener"
+              target="_blank"
+            >
+              Start on WhatsApp
+            </a>
+            <a class="btn-secondary" data-haptic href="mailto:hello@espacios.me">Email Espacios</a>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <div class="footer-content">
+          <div class="footer-col">
+            <h4>Espacios</h4>
+            <p>Growth, Messaging &amp; Automation Agency.</p>
+            <p>Dubai, UAE</p>
+          </div>
+          <div class="footer-col">
+            <h4>Contact</h4>
+            <a data-haptic href="https://wa.me/971552433200" rel="noopener" target="_blank">WhatsApp: +971 55 243 3200</a>
+            <a data-haptic href="tel:+971552433200">Call: +971 55 243 3200</a>
+            <a data-haptic href="mailto:hello@espacios.me">hello@espacios.me</a>
+          </div>
+          <div class="footer-col">
+            <h4>Links</h4>
+            <a data-haptic href="https://espacios.me" rel="noopener" target="_blank">Main site</a>
+            <a data-haptic href="https://dashboard.espacios.me/login" rel="noopener" target="_blank">Dashboard login</a>
+            <a data-haptic href="https://dashboard.espacios.me/signup" rel="noopener" target="_blank">Dashboard signup</a>
+            <a
+              data-haptic
+              href="https://wa.me/971552433200?text=Hi%20Espacios%2C%20please%20send%20the%20onboarding%20documents."
+              rel="noopener"
+              target="_blank"
+            >
+              Onboarding documents
+            </a>
+            <a data-haptic href="#rec1773670971">Contact Espacios</a>
+            <a data-haptic href="#rec1773465011">Campaign gallery</a>
+            <a data-haptic href="#rec1773478851">What We Do</a>
+            <a data-haptic href="#rec1773481641">How It Works</a>
+            <a data-haptic href="#rec1773490431">Pricing</a>
+            <a data-haptic href="#rec1773650671">Cost per lead</a>
+            <a data-haptic href="#rec1773664951">Testimonials</a>
+            <a data-haptic href="#rec1773667631">FAQ</a>
+            <a data-haptic href="#rec1773670971">CTA</a>
+          </div>
+          <div class="footer-col">
+            <h4>Legal</h4>
+            <button class="legal-trigger" data-haptic type="button" data-legal-modal-open="privacy-modal">Privacy Policy</button>
+            <button class="legal-trigger" data-haptic type="button" data-legal-modal-open="terms-modal">Terms and Conditions</button>
+            <button class="legal-trigger" data-haptic type="button" data-legal-modal-open="cookies-modal">Cookie Policy</button>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© <span id="year">2026</span> Espacios. All rights reserved.</p>
+        </div>
+      </footer>
+    </main>
+
+    <div class="legal-modal" id="privacy-modal" role="dialog" aria-modal="true" aria-labelledby="privacy-modal-title" aria-hidden="true">
+      <div class="legal-modal__panel" tabindex="-1">
+        <button class="legal-modal__close" data-haptic type="button" data-legal-modal-close aria-label="Close">×</button>
+        <h2 id="privacy-modal-title">Privacy Policy</h2>
+        <p class="legal-modal__meta">Last updated: January 11, 2026</p>
+        <h3>Who we are</h3>
+        <p>Espacios ("we", "us") is a Growth, Messaging &amp; Automation Agency based in Dubai, UAE. You can contact us at <a href="mailto:hello@espacios.me">hello@espacios.me</a>.</p>
+        <h3>Information we collect</h3>
+        <ul>
+          <li>Contact details you share (name, email, phone number, company, and message content).</li>
+          <li>Communication data when you contact us (e.g., email, WhatsApp, phone, or other channels).</li>
+          <li>Basic usage data (e.g., pages viewed, device/browser information, and approximate location).</li>
+          <li>Cookies and similar technologies used for site functionality and performance.</li>
+        </ul>
+        <h3>How we use information</h3>
+        <ul>
+          <li>Respond to inquiries and provide our services.</li>
+          <li>Operate, maintain, and improve our website and internal systems.</li>
+          <li>Send administrative and (where permitted) marketing communications; you can opt out anytime.</li>
+          <li>Comply with legal obligations and protect against misuse or fraud.</li>
+        </ul>
+        <h3>Sharing</h3>
+        <p>We may share information with service providers who help us run our website and communications (e.g., hosting, analytics, and messaging tools). We may also disclose information if required by law or to protect our rights.</p>
+        <h3>International transfers</h3>
+        <p>Some service providers may process data outside the UAE. When we transfer information internationally, we take reasonable steps to protect it.</p>
+        <h3>Retention</h3>
+        <p>We retain personal information only for as long as needed for the purposes described in this policy, unless a longer retention period is required or permitted by law.</p>
+        <h3>Security</h3>
+        <p>We use reasonable safeguards designed to protect information. No method of transmission or storage is completely secure, so we cannot guarantee absolute security.</p>
+        <h3>Your choices</h3>
+        <ul>
+          <li>Request access, correction, or deletion by contacting us.</li>
+          <li>Opt out of marketing messages via the unsubscribe link (if provided) or by contacting us.</li>
+          <li>Control cookies through your browser settings.</li>
+        </ul>
+        <h3>Third-party links</h3>
+        <p>Our site may link to third-party websites or services. Their privacy practices are governed by their own policies.</p>
+        <h3>Contact</h3>
+        <p>Email: <a href="mailto:hello@espacios.me">hello@espacios.me</a></p>
+      </div>
+    </div>
+
+    <div class="legal-modal" id="terms-modal" role="dialog" aria-modal="true" aria-labelledby="terms-modal-title" aria-hidden="true">
+      <div class="legal-modal__panel" tabindex="-1">
+        <button class="legal-modal__close" data-haptic type="button" data-legal-modal-close aria-label="Close">×</button>
+        <h2 id="terms-modal-title">Terms and Conditions</h2>
+        <p class="legal-modal__meta">Last updated: January 11, 2026</p>
+        <h3>Acceptance</h3>
+        <p>By accessing or using this website, you agree to these Terms and Conditions. If you do not agree, do not use the website.</p>
+        <h3>Use of the website</h3>
+        <ul>
+          <li>Use the website only for lawful purposes.</li>
+          <li>Do not attempt to disrupt, damage, or gain unauthorized access to the website or related systems.</li>
+          <li>You are responsible for the information you submit to us.</li>
+        </ul>
+        <h3>Services</h3>
+        <p>Any services provided by Espacios may be governed by a separate agreement. Website content is provided for general information and may change at any time.</p>
+        <h3>No guarantees</h3>
+        <p>Results from marketing, advertising, messaging, and automation efforts vary. We do not guarantee specific outcomes, including lead volume, conversion rates, or revenue.</p>
+        <h3>Intellectual property</h3>
+        <p>All content on this website (including text, graphics, and design) is owned by Espacios or its licensors and may not be used without permission, except as allowed by law.</p>
+        <h3>Third-party links</h3>
+        <p>This website may include links to third-party websites. We are not responsible for their content, policies, or practices.</p>
+        <h3>Disclaimer</h3>
+        <p>This website is provided "as is" and "as available" without warranties of any kind, to the maximum extent permitted by law.</p>
+        <h3>Limitation of liability</h3>
+        <p>To the maximum extent permitted by law, Espacios will not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues, arising from your use of the website.</p>
+        <h3>Changes</h3>
+        <p>We may update these Terms and Conditions from time to time by posting an updated version on this page.</p>
+        <h3>Contact</h3>
+        <p>Email: <a href="mailto:hello@espacios.me">hello@espacios.me</a></p>
+      </div>
+    </div>
+
+    <div class="legal-modal" id="cookies-modal" role="dialog" aria-modal="true" aria-labelledby="cookies-modal-title" aria-hidden="true">
+      <div class="legal-modal__panel" tabindex="-1">
+        <button class="legal-modal__close" data-haptic type="button" data-legal-modal-close aria-label="Close">×</button>
+        <h2 id="cookies-modal-title">Cookie Policy</h2>
+        <p class="legal-modal__meta">Last updated: January 11, 2026</p>
+        <h3>What cookies are</h3>
+        <p>Cookies are small text files stored on your device that help websites function, remember preferences, and understand how people use pages.</p>
+        <h3>How we use cookies</h3>
+        <ul>
+          <li>Essential cookies: required for basic site functionality and security.</li>
+          <li>Analytics cookies: help us understand traffic and improve the website.</li>
+        </ul>
+        <h3>Managing cookies</h3>
+        <p>You can control cookies through your browser settings. Disabling cookies may affect the functionality of the website.</p>
+        <h3>Contact</h3>
+        <p>Email: <a href="mailto:hello@espacios.me">hello@espacios.me</a></p>
+      </div>
+    </div>
+
+    <script>
+      (() => {
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const haptic = (pattern = 8) => {
+          try {
+            if (reduce) return;
+            if ("vibrate" in navigator) navigator.vibrate(pattern);
+          } catch (_) {}
+        };
+
+        document.querySelectorAll("[data-haptic]").forEach((el) => {
+          el.addEventListener("pointerdown", () => haptic(8), { passive: true });
+        });
+
+        const year = document.getElementById("year");
+        if (year) year.textContent = String(new Date().getFullYear());
+
+        const inputs = ["budget", "cpc", "landing-rate", "qualified-rate"].map((id) => document.getElementById(id));
+        const clicksOut = document.getElementById("clicks-out");
+        const leadsOut = document.getElementById("leads-out");
+        const qualifiedOut = document.getElementById("qualified-out");
+        const cplOut = document.getElementById("cpl-out");
+
+        const formatNumber = (value) => new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value);
+        const formatMoney = (value) =>
+          "AED " + new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(Math.max(0, value));
+
+        const updateEstimator = () => {
+          const budget = Math.max(0, Number(document.getElementById("budget")?.value || 0));
+          const cpc = Math.max(0.1, Number(document.getElementById("cpc")?.value || 0.1));
+          const landingRate = Math.max(0, Number(document.getElementById("landing-rate")?.value || 0)) / 100;
+          const qualifiedRate = Math.max(0, Number(document.getElementById("qualified-rate")?.value || 0)) / 100;
+
+          const clicks = budget / cpc;
+          const leads = clicks * landingRate;
+          const qualified = leads * qualifiedRate;
+          const cpl = qualified > 0 ? budget / qualified : 0;
+
+          clicksOut.textContent = formatNumber(clicks);
+          leadsOut.textContent = formatNumber(leads);
+          qualifiedOut.textContent = formatNumber(qualified);
+          cplOut.textContent = formatMoney(cpl);
+        };
+
+        inputs.forEach((input) => input?.addEventListener("input", updateEstimator));
+        updateEstimator();
+
+        const openButtons = Array.from(document.querySelectorAll("[data-legal-modal-open]"));
+        const closeSelector = "[data-legal-modal-close]";
+        let activeModal = null;
+        let lastActiveEl = null;
+        const focusableSelector = 'a[href], button:not([disabled]), textarea, input, select, details, [tabindex]:not([tabindex="-1"])';
+
+        const getFocusable = (panel) =>
+          Array.from(panel.querySelectorAll(focusableSelector)).filter((el) => !el.hasAttribute("disabled"));
+
+        const closeModal = (modal) => {
+          if (!modal) return;
+          modal.classList.remove("is-open");
+          modal.setAttribute("aria-hidden", "true");
+          document.body.classList.remove("is-modal-open");
+          activeModal = null;
+
+          if (lastActiveEl && typeof lastActiveEl.focus === "function") {
+            window.setTimeout(() => lastActiveEl.focus(), 0);
+          }
+          lastActiveEl = null;
+        };
+
+        const openModal = (modal, triggerEl) => {
+          if (!modal) return;
+          if (activeModal) closeModal(activeModal);
+          activeModal = modal;
+          lastActiveEl = triggerEl || document.activeElement;
+          document.body.classList.add("is-modal-open");
+          modal.classList.add("is-open");
+          modal.setAttribute("aria-hidden", "false");
+          const panel = modal.querySelector(".legal-modal__panel");
+          const closeBtn = modal.querySelector(closeSelector);
+          window.setTimeout(() => (closeBtn || panel)?.focus?.(), 0);
+        };
+
+        openButtons.forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const id = btn.getAttribute("data-legal-modal-open");
+            if (!id) return;
+            openModal(document.getElementById(id), btn);
+          });
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!activeModal) return;
+          const closeBtn = e.target.closest(closeSelector);
+          if (closeBtn) {
+            e.preventDefault();
+            closeModal(activeModal);
+            return;
+          }
+          if (e.target === activeModal) closeModal(activeModal);
+        });
+
+        document.addEventListener("keydown", (e) => {
+          if (!activeModal) return;
+
+          if (e.key === "Escape") {
+            e.preventDefault();
+            closeModal(activeModal);
+            return;
+          }
+
+          if (e.key !== "Tab") return;
+          const panel = activeModal.querySelector(".legal-modal__panel");
+          if (!panel) return;
+          const focusable = getFocusable(panel);
+          if (!focusable.length) return;
+
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
