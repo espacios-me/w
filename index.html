@@ -42,11 +42,21 @@
     }
     .nav-brand { text-decoration: none; display: flex; align-items: center; gap: 8px; }
     .nav-logo-mark {
-      width: 26px; height: 26px; border-radius: 7px;
-      background: rgba(255,255,255,0.92);
-      display: grid; place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 7px;
+      background: transparent;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      flex-shrink: 0;
     }
-    .nav-logo-mark svg { width: 14px; height: 14px; }
+    .nav-logo-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
     .nav-wordmark {
       font-size: 16px; font-weight: 700; letter-spacing: -0.02em;
       color: rgba(255,255,255,0.92);
@@ -316,7 +326,18 @@
       display: flex; align-items: center; justify-content: space-between;
       flex-wrap: wrap; gap: 14px;
     }
-    .footer-brand { font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.4); text-decoration: none; letter-spacing: -0.01em; }
+    .footer-brand {
+      font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.4);
+      text-decoration: none; letter-spacing: -0.01em;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .footer-brand img {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      object-fit: cover;
+      display: block;
+    }
     .footer-links { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
     .footer-link { font-size: 12px; color: rgba(255,255,255,0.28); text-decoration: none; transition: color 0.2s; }
     .footer-link:hover { color: rgba(255,255,255,0.55); }
@@ -351,9 +372,7 @@
 <nav class="nav">
   <a href="#" class="nav-brand">
     <div class="nav-logo-mark">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-      </svg>
+      <img src="logo.jpg" alt="Espacios logo" />
     </div>
     <span class="nav-wordmark">espacios</span>
   </a>
@@ -643,7 +662,10 @@
 </div>
 
 <footer class="footer">
-  <a href="#" class="footer-brand">espacios</a>
+  <a href="#" class="footer-brand">
+    <img src="logo.jpg" alt="Espacios logo" />
+    <span>espacios</span>
+  </a>
   <div class="footer-links">
     <a href="#services" class="footer-link">Services</a>
     <a href="#pricing" class="footer-link">Pricing</a>
