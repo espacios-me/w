@@ -3,773 +3,969 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>espacios — AI messaging ops for UAE real estate</title>
-  <meta name="description" content="Capture demand, qualify instantly, and follow up until conversion. AI-powered WhatsApp messaging for real estate teams." />
+  <title>espacios — AI messaging ops</title>
+  <meta name="description" content="Espacios builds AI-driven acquisition and qualification systems for high-intent teams." />
   <style>
     :root {
-      --page-bg: #E8EAED;
-      --text: #1A1A1A;
-      --muted: #5A5A5A;
-      --accent: #B6FF3B;
-      --accent-glow: rgba(182,255,59,.45);
-      --card-bg: rgba(255,255,255,.35);
-      --card-border: rgba(255,255,255,.62);
-      --stroke: rgba(15,15,16,.10);
-      --stroke2: rgba(15,15,16,.07);
-      --shadow: 0 26px 78px rgba(0,0,0,.08);
-      --shadow-lg: 0 40px 120px rgba(0,0,0,.12), 0 16px 48px rgba(0,0,0,.08);
-      --radius: 32px;
-      --radius2: 22px;
+      --bg: #050505;
+      --bg-2: #0b0b0c;
+      --panel: rgba(255,255,255,.04);
+      --panel-2: rgba(255,255,255,.06);
+      --line: rgba(255,255,255,.09);
+      --line-2: rgba(255,255,255,.14);
+      --text: #f4f4f5;
+      --muted: rgba(244,244,245,.68);
+      --muted-2: rgba(244,244,245,.44);
+      --shadow: 0 18px 50px rgba(0,0,0,.32);
+      --radius: 24px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
       --pill: 999px;
-      --blur: blur(28px) saturate(180%);
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       --ease: cubic-bezier(.16,1,.3,1);
-      --font: system-ui,-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter",sans-serif;
-      --mono: ui-monospace,"SF Mono",Menlo,Monaco,monospace;
+      --dock-x: 0px;
+      --dock-y: 0px;
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
       font-family: var(--font);
-      background: var(--page-bg);
       color: var(--text);
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
-
-    /* AMBIENT BG */
-    .bg-ambient {
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
       background:
-        radial-gradient(900px 600px at 10% 15%, rgba(255,255,255,.65), transparent 55%),
-        radial-gradient(700px 500px at 90% 20%, rgba(255,255,255,.45), transparent 55%),
-        radial-gradient(600px 400px at 55% 90%, rgba(255,255,255,.35), transparent 55%),
-        linear-gradient(165deg, #f0f2f5 0%, #e4e7eb 40%, #d8dce2 100%);
+        radial-gradient(1200px 700px at 50% -10%, rgba(255,255,255,.06), transparent 45%),
+        radial-gradient(800px 500px at 100% 0%, rgba(255,255,255,.04), transparent 38%),
+        linear-gradient(180deg, #0a0a0b 0%, #050505 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
-    .orbs {
-      position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0;
-    }
-    .orb {
-      position: absolute; border-radius: 999px;
-      filter: blur(60px); opacity: .45; mix-blend-mode: soft-light;
-      will-change: transform; animation: orbDrift 18s ease-in-out infinite;
-    }
-    .orb.o1 { width: min(55vw,560px); height: min(55vw,560px); left: -12%; top: -18%;
-      background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.9), transparent 50%),
-        radial-gradient(circle at 65% 65%, rgba(182,255,59,.25), transparent 55%),
-        radial-gradient(circle at 50% 50%, rgba(147,197,253,.18), transparent 60%); }
-    .orb.o2 { width: min(50vw,500px); height: min(50vw,500px); right: -15%; top: -5%;
-      opacity: .38; animation-delay: -6s; animation-duration: 22s;
-      background: radial-gradient(circle at 40% 40%, rgba(255,255,255,.85), transparent 50%),
-        radial-gradient(circle at 60% 70%, rgba(196,181,253,.22), transparent 55%),
-        radial-gradient(circle at 50% 50%, rgba(182,255,59,.18), transparent 60%); }
-    .orb.o3 { width: min(60vw,640px); height: min(60vw,640px); left: 12%; bottom: -30%;
-      opacity: .35; animation-delay: -12s; animation-duration: 26s;
-      background: radial-gradient(circle at 45% 45%, rgba(255,255,255,.8), transparent 50%),
-        radial-gradient(circle at 55% 55%, rgba(182,255,59,.22), transparent 55%); }
-    @keyframes orbDrift {
-      0%,100% { transform: translate(0,0) scale(1); }
-      33% { transform: translate(18px,-14px) scale(1.02); }
-      66% { transform: translate(-12px,10px) scale(.98); }
-    }
-    @media (prefers-reduced-motion: reduce) { .orb { animation: none; } }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    img, svg { display: block; max-width: 100%; }
 
-    /* NAV */
-    .nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      height: 58px; display: flex; align-items: center; justify-content: space-between;
-      padding: 0 40px;
-      background: rgba(232,234,237,.72);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--card-border);
+    .page {
+      position: relative;
+      z-index: 1;
     }
-    .nav-brand { text-decoration: none; display: flex; align-items: center; gap: 10px; }
-    .nav-logo-box {
-      width: 32px; height: 32px; border-radius: 10px;
-      background: var(--card-bg); border: 1px solid var(--card-border);
-      display: grid; place-items: center;
-      backdrop-filter: blur(12px); box-shadow: 0 4px 14px rgba(0,0,0,.06);
-    }
-    .nav-logo-box svg { width: 16px; height: 16px; fill: none; stroke: rgba(26,26,26,.75); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-    .nav-wordmark { font-size: 16px; font-weight: 700; letter-spacing: -.02em; color: var(--text); }
-    .nav-links { display: flex; align-items: center; gap: 4px; }
-    .nav-link {
-      font-size: 13px; color: var(--muted); text-decoration: none;
-      padding: 6px 12px; border-radius: 8px;
-      transition: color .2s, background .2s;
-    }
-    .nav-link:hover { color: var(--text); background: rgba(255,255,255,.5); }
-    .nav-cta {
-      font-size: 13px; font-weight: 600; color: rgba(26,26,26,.88);
-      background: rgba(255,255,255,.7); border: 1px solid var(--card-border);
-      padding: 7px 16px; border-radius: 10px; text-decoration: none; margin-left: 8px;
-      box-shadow: 0 8px 20px rgba(0,0,0,.06);
-      transition: background .15s, transform .15s, box-shadow .15s;
-    }
-    .nav-cta:hover { background: #fff; transform: translateY(-1px); box-shadow: 0 12px 28px rgba(0,0,0,.09); }
 
-    /* HERO */
+    .noise,
+    .grid {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .noise {
+      opacity: .06;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.8) 0 1px, transparent 1px),
+        radial-gradient(circle at 80% 60%, rgba(255,255,255,.5) 0 1px, transparent 1px);
+      background-size: 24px 24px, 32px 32px;
+      mix-blend-mode: soft-light;
+    }
+    .grid {
+      background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(180deg, rgba(0,0,0,.75), transparent 80%);
+    }
+
     .hero {
-      position: relative; z-index: 1;
-      min-height: 100vh; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 120px 40px 100px; text-align: center;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 56px 20px 92px;
     }
-    .hero-inner { max-width: 700px; position: relative; z-index: 2; }
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 8px 16px; border-radius: var(--pill);
-      background: rgba(255,255,255,.55); border: 1px solid var(--card-border);
-      box-shadow: 0 8px 24px rgba(0,0,0,.06);
-      font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 28px;
-      opacity: 0; animation: fadeUp .7s var(--ease) .1s forwards;
+    .hero-inner {
+      width: min(980px, 100%);
+      text-align: center;
     }
-    .badge-dot {
-      width: 7px; height: 7px; border-radius: 99px; background: var(--accent);
-      box-shadow: 0 0 0 3px rgba(182,255,59,.25); animation: pulse 2s ease-in-out infinite;
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: var(--pill);
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      backdrop-filter: blur(10px);
     }
-    @keyframes pulse {
-      0%,100% { box-shadow: 0 0 0 3px rgba(182,255,59,.25), 0 0 10px rgba(182,255,59,.35); }
-      50% { box-shadow: 0 0 0 6px rgba(182,255,59,.12), 0 0 18px rgba(182,255,59,.25); }
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #fff 0%, #8f8f96 55%, #2a2a2f 100%);
+      box-shadow: 0 0 0 3px rgba(255,255,255,.06);
     }
-    .hero-h1 {
-      font-size: clamp(40px, 6vw, 72px); font-weight: 760; line-height: 1.05;
-      letter-spacing: -.04em; color: var(--text); margin-bottom: 22px;
-      opacity: 0; animation: fadeUp .8s var(--ease) .2s forwards;
+    .hero h1 {
+      margin-top: 24px;
+      font-size: clamp(44px, 8vw, 110px);
+      line-height: .96;
+      letter-spacing: -.06em;
+      font-weight: 900;
     }
-    .hero-h1 .hi { color: var(--muted); }
-    .hero-p {
-      font-size: 17px; line-height: 1.7; color: var(--muted);
-      max-width: 500px; margin: 0 auto 40px;
-      opacity: 0; animation: fadeUp .7s var(--ease) .32s forwards;
+    .hero h1 .soft {
+      color: rgba(255,255,255,.58);
     }
-    .hero-btns {
-      display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;
-      opacity: 0; animation: fadeUp .7s var(--ease) .42s forwards;
+    .hero p {
+      width: min(700px, 100%);
+      margin: 20px auto 0;
+      font-size: clamp(16px, 2vw, 20px);
+      line-height: 1.75;
+      color: var(--muted);
     }
-    .btn-primary {
-      font-size: 14px; font-weight: 700; color: rgba(10,10,10,.9);
-      background: linear-gradient(135deg, var(--accent) 0%, rgba(182,255,59,.85) 100%);
-      border: 1px solid rgba(182,255,59,.5);
-      box-shadow: 0 14px 40px rgba(182,255,59,.3), 0 6px 16px rgba(0,0,0,.07);
-      padding: 13px 24px; border-radius: 14px; cursor: pointer;
-      text-decoration: none; display: inline-flex; align-items: center; gap: 7px;
-      transition: transform .2s var(--ease), box-shadow .2s var(--ease);
+    .hero-actions {
+      margin-top: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 20px 50px rgba(182,255,59,.35), 0 8px 20px rgba(0,0,0,.09); }
-    .btn-primary svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .btn,
     .btn-ghost {
-      font-size: 14px; color: var(--muted); text-decoration: none;
-      padding: 13px 20px; border-radius: 14px;
-      background: rgba(255,255,255,.45); border: 1px solid var(--card-border);
-      box-shadow: 0 8px 20px rgba(0,0,0,.06);
-      display: inline-flex; align-items: center; gap: 6px;
-      transition: all .2s var(--ease);
+      min-height: 48px;
+      padding: 13px 18px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 900;
+      transition: transform .2s var(--ease), background .2s var(--ease), border-color .2s var(--ease), box-shadow .2s var(--ease);
+      will-change: transform;
     }
-    .btn-ghost:hover { background: rgba(255,255,255,.65); color: var(--text); transform: translateY(-1px); box-shadow: 0 12px 28px rgba(0,0,0,.08); }
-
-    /* Hero stats */
-    .hero-stats {
-      display: flex; align-items: center; justify-content: center; gap: 0;
-      margin-top: 64px; padding-top: 40px; border-top: 1px solid var(--stroke2);
-      opacity: 0; animation: fadeUp .6s var(--ease) .55s forwards;
+    .btn {
+      background: linear-gradient(180deg, #ffffff 0%, #d3d3d6 38%, #7f7f86 70%, #2f2f34 100%);
+      color: #050505;
+      border: 1px solid rgba(255,255,255,.2);
+      box-shadow: 0 10px 26px rgba(255,255,255,.08), 0 12px 30px rgba(0,0,0,.26);
     }
-    .hero-stat { padding: 0 36px; border-right: 1px solid var(--stroke2); text-align: center; }
-    .hero-stat:first-child { padding-left: 0; }
-    .hero-stat:last-child { padding-right: 0; border-right: none; }
-    .hero-stat-val {
-      font-size: 26px; font-weight: 740; letter-spacing: -.03em;
-      color: var(--text); display: block; margin-bottom: 4px;
-    }
-    .hero-stat-label { font-size: 12px; color: var(--muted); }
-
-    /* SECTION SHARED */
-    .section { position: relative; z-index: 1; padding: 88px 40px; }
-    .section-in { max-width: 960px; margin: 0 auto; }
-    .section-in.wide { max-width: 1060px; }
-    .s-label {
-      font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 14px;
-    }
-    .s-title {
-      font-size: clamp(22px, 3vw, 34px); font-weight: 700; letter-spacing: -.025em;
-      line-height: 1.18; color: var(--text); margin-bottom: 12px;
-    }
-    .s-sub { font-size: 15px; line-height: 1.65; color: var(--muted); max-width: 460px; margin-bottom: 48px; }
-
-    /* Glass card containers */
-    .glass-card {
-      background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: var(--radius); box-shadow: var(--shadow);
-      backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
-      padding: 32px; overflow: hidden; position: relative;
-    }
-    .glass-card::before {
-      content: ""; position: absolute; inset: 0;
-      background: radial-gradient(circle at 18% 14%, rgba(255,255,255,.75), transparent 50%),
-        radial-gradient(circle at 88% 84%, rgba(215,220,228,.28), transparent 50%);
-      pointer-events: none;
-    }
-    .glass-card > * { position: relative; z-index: 1; }
-
-    /* Services grid */
-    .services-grid {
-      display: grid; grid-template-columns: repeat(3,1fr);
-      gap: 14px;
-    }
-    .svc-tile {
-      background: rgba(255,255,255,.38); border: 1px solid var(--card-border);
-      border-radius: var(--radius2); padding: 22px 20px;
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 14px 44px rgba(0,0,0,.05);
-      transition: transform .3s var(--ease), box-shadow .3s var(--ease), background .2s;
-      position: relative; overflow: hidden;
-    }
-    .svc-tile::before {
-      content: ""; position: absolute; inset: 0;
-      background: radial-gradient(circle at 14% 14%, rgba(255,255,255,.7), transparent 50%);
-      pointer-events: none;
-    }
-    .svc-tile > * { position: relative; z-index: 1; }
-    .svc-tile:hover { transform: translateY(-3px); box-shadow: 0 22px 60px rgba(0,0,0,.09); background: rgba(255,255,255,.52); }
-    .svc-num {
-      font-size: 11px; font-weight: 600; letter-spacing: .08em;
-      color: var(--muted); margin-bottom: 14px; font-family: var(--mono);
-    }
-    .svc-title { font-size: 14px; font-weight: 650; letter-spacing: -.01em; color: var(--text); margin-bottom: 8px; }
-    .svc-desc { font-size: 13px; line-height: 1.65; color: var(--muted); }
-
-    /* Pricing calc */
-    .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
-    .calc-controls { display: flex; flex-direction: column; gap: 24px; }
-    .field-group { display: flex; flex-direction: column; gap: 10px; }
-    .field-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .field-label { font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
-    .field-val { font-size: 14px; font-weight: 640; color: var(--text); font-family: var(--mono); }
-    input[type="range"] {
-      width: 100%; height: 4px; border-radius: 2px;
-      background: rgba(15,15,16,.1); border: none; padding: 0;
-      cursor: pointer; accent-color: var(--text); -webkit-appearance: none;
-    }
-    input[type="range"]::-webkit-slider-track { height: 4px; border-radius: 2px; background: rgba(15,15,16,.1); }
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
-      background: var(--text); border: 2.5px solid white;
-      box-shadow: 0 2px 6px rgba(0,0,0,.2); margin-top: -6px;
-    }
-    .toggle-row { display: flex; gap: 0; }
-    .toggle-btn {
-      font-size: 13px; font-weight: 500; color: var(--muted);
-      background: rgba(255,255,255,.4); border: 1px solid var(--card-border);
-      padding: 9px 18px; cursor: pointer; transition: all .15s; flex: 1; text-align: center;
-    }
-    .toggle-btn:first-child { border-radius: 10px 0 0 10px; }
-    .toggle-btn:last-child { border-radius: 0 10px 10px 0; border-left: none; }
-    .toggle-btn.active { background: var(--text); color: #fff; border-color: var(--text); }
-
-    /* Results panel glass */
-    .results-panel {
-      background: rgba(255,255,255,.45); border: 1px solid var(--card-border);
-      border-radius: var(--radius2); overflow: hidden;
-      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-      box-shadow: 0 14px 44px rgba(0,0,0,.06);
-    }
-    .results-header {
-      padding: 14px 20px; background: rgba(255,255,255,.3); border-bottom: 1px solid var(--stroke2);
-    }
-    .results-header-label { font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-    .result-row {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 13px 20px; border-bottom: 1px solid var(--stroke2); font-size: 13px;
-    }
-    .result-row:last-child { border-bottom: none; }
-    .result-row.total { background: rgba(255,255,255,.3); }
-    .result-key { color: var(--muted); }
-    .result-val { font-weight: 640; color: var(--text); font-family: var(--mono); }
-    .result-val.green { color: #16A34A; }
-    .calc-cta { margin-top: 20px; }
-    .btn-dark {
-      font-size: 13px; font-weight: 640; color: rgba(255,255,255,.92);
-      background: rgba(26,26,26,.88); border: 1px solid rgba(26,26,26,.7);
-      padding: 11px 20px; border-radius: 10px;
-      text-decoration: none; display: inline-flex; align-items: center; gap: 7px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.15);
-      transition: all .2s var(--ease); cursor: pointer;
-    }
-    .btn-dark:hover { background: rgba(26,26,26,1); transform: translateY(-1px); box-shadow: 0 14px 32px rgba(0,0,0,.2); }
-    .btn-dark svg { width: 13px; height: 13px; stroke: rgba(255,255,255,.8); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-    .fine-print { margin-top: 10px; font-size: 12px; color: rgba(90,90,90,.7); line-height: 1.5; }
-
-    /* Atom section */
-    .atom-section {
-      background: rgba(20,20,22,.96); border-radius: 28px; padding: 56px 48px;
-      box-shadow: 0 32px 80px rgba(0,0,0,.2); position: relative; overflow: hidden;
-    }
-    .atom-section::before {
-      content: ""; position: absolute; inset: 0;
-      background: radial-gradient(900px 500px at 30% 40%, rgba(182,255,59,.06), transparent 60%);
-      pointer-events: none;
-    }
-    .atom-section > * { position: relative; z-index: 1; }
-    .atom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
-    .atom-features { display: flex; flex-direction: column; gap: 1px; margin-top: 32px; }
-    .atom-feat {
-      padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,.06);
-      display: flex; gap: 14px; align-items: flex-start;
-    }
-    .atom-feat:last-child { border-bottom: none; }
-    .atom-feat-ico {
-      width: 28px; height: 28px; border-radius: 8px;
-      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
-      display: grid; place-items: center; flex-shrink: 0;
-    }
-    .atom-feat-ico svg { width: 13px; height: 13px; stroke: rgba(255,255,255,.6); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-    .atom-feat-title { font-size: 14px; font-weight: 640; color: rgba(255,255,255,.88); margin-bottom: 4px; }
-    .atom-feat-desc { font-size: 13px; line-height: 1.6; color: rgba(255,255,255,.38); }
-    .atom-s-label { font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: rgba(182,255,59,.65); margin-bottom: 14px; }
-    .atom-s-title { font-size: clamp(22px,3vw,34px); font-weight: 700; letter-spacing: -.025em; line-height: 1.18; color: rgba(255,255,255,.92); margin-bottom: 12px; }
-    .atom-s-sub { font-size: 15px; line-height: 1.65; color: rgba(255,255,255,.35); max-width: 420px; margin-bottom: 48px; }
-
-    /* Chat shell dark */
-    .chat-shell {
-      border: 1px solid rgba(255,255,255,.09); border-radius: 18px; overflow: hidden;
-      background: rgba(255,255,255,.03); backdrop-filter: blur(14px);
-    }
-    .chat-top {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,.06);
+    .btn:hover,
+    .btn-ghost:hover { transform: translateY(-2px); }
+    .btn-ghost {
+      color: var(--text);
       background: rgba(255,255,255,.04);
-    }
-    .chat-top-left { display: flex; align-items: center; gap: 10px; }
-    .chat-avatar {
-      width: 30px; height: 30px; border-radius: 9px;
-      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.12);
-      display: grid; place-items: center;
-    }
-    .chat-avatar svg { width: 14px; height: 14px; stroke: rgba(255,255,255,.7); fill: none; stroke-width: 1.5; }
-    .chat-name { font-size: 13px; font-weight: 640; color: rgba(255,255,255,.85); }
-    .chat-status { font-size: 11px; color: rgba(255,255,255,.3); }
-    .chat-online { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #4ADE80; }
-    .chat-online-dot { width: 5px; height: 5px; border-radius: 50%; background: #4ADE80; }
-    .chat-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
-    .bubble { max-width: 85%; padding: 10px 12px; border-radius: 12px; font-size: 13px; line-height: 1.5; }
-    .bubble.user {
-      align-self: flex-end; background: rgba(182,255,59,.12);
-      border: 1px solid rgba(182,255,59,.2); color: rgba(255,255,255,.8);
-    }
-    .bubble.ai {
-      align-self: flex-start; background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.08); color: rgba(255,255,255,.62);
+      border: 1px solid rgba(255,255,255,.09);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.02);
     }
 
-    /* CTA band */
-    .cta-band {
-      position: relative; z-index: 1;
-      margin: 0 40px 80px;
-      background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: var(--radius); padding: 64px 56px; text-align: center;
-      box-shadow: var(--shadow); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+    .hero-metrics {
+      margin-top: 52px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px;
+    }
+    .metric {
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+    .metric strong {
+      display: block;
+      font-size: 26px;
+      letter-spacing: -.04em;
+      font-weight: 900;
+    }
+    .metric span {
+      display: block;
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .section {
+      padding: 26px 20px 26px;
+      content-visibility: auto;
+      contain-intrinsic-size: 1px 900px;
+    }
+    .section-inner {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+    }
+    .section-kicker {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted-2);
+    }
+    .section-title {
+      margin-top: 12px;
+      font-size: clamp(26px, 4vw, 44px);
+      line-height: 1.05;
+      letter-spacing: -.05em;
+      font-weight: 900;
+    }
+    .section-copy {
+      margin-top: 12px;
+      max-width: 700px;
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--muted);
+    }
+
+    .cards {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px;
+    }
+    .card {
+      position: relative;
+      padding: 22px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: var(--shadow);
       overflow: hidden;
     }
-    .cta-band::before {
-      content: ""; position: absolute; inset: 0;
-      background: radial-gradient(circle at 50% 40%, rgba(182,255,59,.08), transparent 60%),
-        radial-gradient(circle at 20% 15%, rgba(255,255,255,.7), transparent 50%);
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(255,255,255,.08), transparent 38%);
       pointer-events: none;
     }
-    .cta-band > * { position: relative; z-index: 1; }
+    .card-num {
+      position: relative;
+      z-index: 1;
+      font-size: 11px;
+      letter-spacing: .14em;
+      font-weight: 900;
+      font-family: var(--mono);
+      color: var(--muted-2);
+      text-transform: uppercase;
+    }
+    .card h3 {
+      position: relative;
+      z-index: 1;
+      margin-top: 14px;
+      font-size: 17px;
+      line-height: 1.2;
+      letter-spacing: -.03em;
+      font-weight: 900;
+    }
+    .card p {
+      position: relative;
+      z-index: 1;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.72;
+    }
 
-    /* Footer */
+    .calc-grid {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+    .panel,
+    .result-panel,
+    .atom-shell,
+    .cta,
+    .dock-panel {
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      border-radius: 20px;
+    }
+    .panel { padding: 22px; }
+    .field + .field { margin-top: 22px; }
+    .field-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted-2);
+      font-weight: 900;
+    }
+    .value {
+      font-size: 14px;
+      font-weight: 900;
+      font-family: var(--mono);
+    }
+    input[type="range"] {
+      width: 100%;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+      outline: 0;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      cursor: pointer;
+      background: linear-gradient(180deg, #fff 0%, #b8b8be 40%, #6b6b72 70%, #19191d 100%);
+      border: 2px solid rgba(255,255,255,.9);
+      box-shadow: 0 4px 14px rgba(0,0,0,.35);
+    }
+    .toggle-row {
+      display: flex;
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .toggle {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 11px 14px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 900;
+      transition: background .2s var(--ease), color .2s var(--ease);
+    }
+    .toggle.active {
+      background: rgba(255,255,255,.92);
+      color: #050505;
+    }
+    .panel-actions { margin-top: 22px; }
+
+    .result-panel {
+      overflow: hidden;
+    }
+    .result-head {
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-weight: 900;
+      color: var(--muted-2);
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      font-size: 13px;
+    }
+    .row:last-child { border-bottom: 0; }
+    .row.total { background: rgba(255,255,255,.03); }
+    .row .key { color: var(--muted); }
+    .row .val { font-weight: 900; font-family: var(--mono); }
+    .fine { margin-top: 10px; font-size: 12px; line-height: 1.62; color: var(--muted-2); }
+
+    .atom-shell {
+      margin-top: 24px;
+      padding: 28px;
+    }
+    .atom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+    .atom-feature {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 12px;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .atom-feature:last-child { border-bottom: 0; }
+    .atom-ico {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      color: var(--text);
+      background: linear-gradient(180deg, #ffffff, #97979d 58%, #25252a 100%);
+    }
+    .atom-feature h3 {
+      font-size: 15px;
+      line-height: 1.25;
+      font-weight: 900;
+      letter-spacing: -.02em;
+    }
+    .atom-feature p {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .chat {
+      border-radius: 18px;
+      overflow: hidden;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .chat-top {
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .chat-name {
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .chat-sub,
+    .online {
+      font-size: 11px;
+      color: var(--muted-2);
+    }
+    .chat-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .bubble {
+      max-width: 84%;
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.58;
+    }
+    .bubble.user {
+      align-self: flex-end;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.08);
+      color: rgba(255,255,255,.84);
+    }
+    .bubble.ai {
+      align-self: flex-start;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+      color: rgba(255,255,255,.62);
+    }
+
+    .cta {
+      margin: 22px auto 72px;
+      width: min(1120px, calc(100% - 40px));
+      padding: 48px 24px;
+      text-align: center;
+    }
+    .cta p {
+      margin: 14px auto 0;
+      max-width: 680px;
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--muted);
+    }
+    .cta .btn { margin-top: 24px; }
+
     .footer {
-      position: relative; z-index: 1;
-      background: rgba(20,20,22,.96); border-top: 1px solid rgba(255,255,255,.08);
-      padding: 28px 40px; display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 14px;
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
     }
-    .footer-brand { font-size: 14px; font-weight: 700; color: rgba(255,255,255,.4); text-decoration: none; }
-    .footer-links { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
-    .footer-link { font-size: 12px; color: rgba(255,255,255,.28); text-decoration: none; transition: color .2s; }
-    .footer-link:hover { color: rgba(255,255,255,.55); }
-    .footer-copy { font-size: 12px; color: rgba(255,255,255,.16); }
-
-    /* Scroll fade */
-    .fade-in { opacity: 0; transform: translateY(12px); transition: opacity .55s ease, transform .55s ease; }
-    .fade-in.is-vis { opacity: 1; transform: translateY(0); }
-    @keyframes fadeUp { from { opacity:0; transform: translateY(14px); } to { opacity:1; transform: translateY(0); } }
-
-    /* Responsive */
-    @media (max-width: 860px) {
-      .nav { padding: 0 20px; }
-      .nav-links .nav-link { display: none; }
-      .hero { padding: 100px 24px 72px; }
-      .hero-stats { flex-wrap: wrap; }
-      .hero-stat { padding: 16px 24px; border-right: none; border-bottom: 1px solid var(--stroke2); width: 50%; }
-      .section { padding: 60px 24px; }
-      .services-grid { grid-template-columns: 1fr; }
-      .calc-grid { grid-template-columns: 1fr; gap: 28px; }
-      .atom-section { padding: 40px 28px; border-radius: 20px; }
-      .atom-grid { grid-template-columns: 1fr; gap: 36px; }
-      .cta-band { margin: 0 24px 60px; padding: 48px 32px; }
-      .footer { padding: 24px 20px; flex-direction: column; align-items: flex-start; }
+    .footer-brand {
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: -.02em;
     }
-    @media (max-width: 540px) {
-      .hero-h1 { font-size: 36px; }
-      .hero-stat { width: 100%; }
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footer-link,
+    .footer-copy {
+      font-size: 12px;
+      color: var(--muted-2);
+    }
+    .footer-link:hover { color: var(--text); }
+
+    .dock {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 80;
+      transition: top .32s var(--ease), right .32s var(--ease), bottom .32s var(--ease), transform .32s var(--ease);
+    }
+    body.docked .dock {
+      top: auto;
+      right: 18px;
+      bottom: 18px;
+    }
+    .orb-button {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.14);
+      cursor: pointer;
+      background:
+        radial-gradient(circle at 28% 24%, rgba(255,255,255,.98) 0%, rgba(230,230,234,.96) 14%, rgba(138,138,145,.96) 38%, rgba(54,54,60,.98) 68%, rgba(3,3,3,1) 100%);
+      box-shadow:
+        inset -14px -18px 24px rgba(0,0,0,.35),
+        inset 14px 14px 20px rgba(255,255,255,.14),
+        0 18px 36px rgba(0,0,0,.32),
+        0 0 0 1px rgba(255,255,255,.08);
+      position: relative;
+      transition: transform .22s var(--ease), box-shadow .22s var(--ease);
+      will-change: transform;
+    }
+    .orb-button:hover { transform: scale(1.04); }
+    .orb-button::before {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 10px;
+      top: 10px;
+      left: 12px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.7);
+      filter: blur(3px);
+      transform: rotate(-18deg);
+    }
+    .orb-button::after {
+      content: "AI";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .14em;
+      color: rgba(255,255,255,.84);
+      text-shadow: 0 1px 2px rgba(0,0,0,.45);
+    }
+
+    .dock-panel {
+      position: absolute;
+      top: 72px;
+      right: 0;
+      width: min(320px, calc(100vw - 36px));
+      padding: 14px;
+      opacity: 0;
+      transform: translateY(-8px) scale(.98);
+      pointer-events: none;
+      transition: opacity .22s var(--ease), transform .22s var(--ease);
+    }
+    .dock.open .dock-panel {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+    body.docked .dock-panel {
+      top: auto;
+      bottom: 72px;
+    }
+    .dock-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .dock-title {
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: -.02em;
+    }
+    .dock-sub {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--muted-2);
+    }
+    .dock-badge {
+      padding: 6px 10px;
+      border-radius: var(--pill);
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.08);
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 900;
+    }
+    .dock-links {
+      margin-top: 12px;
+      display: grid;
+      gap: 8px;
+    }
+    .dock-link {
+      padding: 12px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.06);
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--muted);
+      transition: background .2s var(--ease), color .2s var(--ease), transform .2s var(--ease);
+    }
+    .dock-link:hover {
+      background: rgba(255,255,255,.07);
+      color: var(--text);
+      transform: translateX(2px);
+    }
+    .dock-actions {
+      margin-top: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    @media (max-width: 980px) {
+      .cards,
+      .calc-grid,
+      .atom-grid,
+      .hero-metrics {
+        grid-template-columns: 1fr;
+      }
+      .hero-metrics { gap: 10px; }
+    }
+    @media (max-width: 760px) {
+      .hero { padding-top: 44px; }
+      .hero h1 { font-size: 56px; }
+      .dock {
+        right: 14px;
+        top: 14px;
+      }
+      body.docked .dock { right: 14px; bottom: 14px; }
+      .cta,
+      .footer { width: calc(100% - 28px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="grid" aria-hidden="true"></div>
 
-<div class="bg-ambient" aria-hidden="true"></div>
-<div class="orbs" aria-hidden="true">
-  <div class="orb o1"></div>
-  <div class="orb o2"></div>
-  <div class="orb o3"></div>
-</div>
-
-<!-- NAV -->
-<nav class="nav">
-  <a href="#" class="nav-brand">
-    <div class="nav-logo-box">
-      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    </div>
-    <span class="nav-wordmark">espacios</span>
-  </a>
-  <div class="nav-links">
-    <a href="#services" class="nav-link">Services</a>
-    <a href="#pricing" class="nav-link">Pricing</a>
-    <a href="#atom" class="nav-link">Atom</a>
-    <a href="espacios-privacy.html" class="nav-link">Privacy</a>
-    <a href="https://wa.me/971523709989?text=Hi+Espacios%2C+I%27d+like+a+custom+quote." target="_blank" rel="noopener" class="nav-cta">Get a quote</a>
-  </div>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-inner">
-    <div class="hero-badge"><span class="badge-dot"></span>AI messaging ops · UAE real estate</div>
-    <h1 class="hero-h1">Capture demand.<br/><span class="hi">Qualify instantly.</span><br/>Follow up until conversion.</h1>
-    <p class="hero-p">Espacios builds end-to-end acquisition and qualification infrastructure for real estate teams — powered by AI on WhatsApp.</p>
-    <div class="hero-btns">
-      <a href="https://wa.me/971523709989?text=Hi+Espacios%2C+I%27d+like+a+custom+quote." target="_blank" rel="noopener" class="btn-primary">
-        Get a custom quote
-        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-      <a href="#services" class="btn-ghost">See what we build</a>
-    </div>
-    <div class="hero-stats">
-      <div class="hero-stat"><span class="hero-stat-val">&lt; 5 min</span><span class="hero-stat-label">Avg. qualification time</span></div>
-      <div class="hero-stat"><span class="hero-stat-val">7 langs</span><span class="hero-stat-label">Messaging support</span></div>
-      <div class="hero-stat"><span class="hero-stat-val">AED 110</span><span class="hero-stat-label">Base platform / mo</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- SERVICES -->
-<section class="section" id="services">
-  <div class="section-in">
-    <div class="fade-in">
-      <p class="s-label">What we build</p>
-      <h2 class="s-title">End-to-end infrastructure for lead-driven teams.</h2>
-      <p class="s-sub">Six capabilities that run from first inbound signal to agent handoff — without friction.</p>
-    </div>
-    <div class="services-grid fade-in">
-      <div class="svc-tile">
-        <div class="svc-num">01</div>
-        <div class="svc-title">Lead Generation System</div>
-        <div class="svc-desc">Multi-channel campaigns that fill your pipeline with buyers across Meta, Google, and organic channels.</div>
-      </div>
-      <div class="svc-tile">
-        <div class="svc-num">02</div>
-        <div class="svc-title">Instant Qualification Engine</div>
-        <div class="svc-desc">AI qualifies every lead on WhatsApp in under 5 minutes — budget, timeline, intent, and purpose captured automatically.</div>
-      </div>
-      <div class="svc-tile">
-        <div class="svc-num">03</div>
-        <div class="svc-title">Data Enrichment & Routing</div>
-        <div class="svc-desc">Clean structured data, CRM sync, and intelligent agent assignment based on your routing rules.</div>
-      </div>
-      <div class="svc-tile">
-        <div class="svc-num">04</div>
-        <div class="svc-title">Automation Infrastructure</div>
-        <div class="svc-desc">Messaging sequences in 7 languages with workflow triggers, drip reminders, and status-aware follow-up.</div>
-      </div>
-      <div class="svc-tile">
-        <div class="svc-num">05</div>
-        <div class="svc-title">Ongoing Optimization</div>
-        <div class="svc-desc">Weekly calls, A/B testing, AI tuning, and conversion improvement — execution that compounds over time.</div>
-      </div>
-      <div class="svc-tile">
-        <div class="svc-num">06</div>
-        <div class="svc-title">Reporting & Analytics</div>
-        <div class="svc-desc">Real-time pipeline visibility, CPL tracking, agent metrics, and attribution across every channel.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PRICING CALCULATOR -->
-<section class="section" id="pricing">
-  <div class="section-in wide">
-    <div class="fade-in">
-      <p class="s-label">Pricing</p>
-      <h2 class="s-title">Estimate your monthly cost.</h2>
-      <p class="s-sub">Adjust your message volume to see your platform cost. No surprises.</p>
-    </div>
-    <div class="calc-grid fade-in">
-      <div class="calc-controls">
-        <div class="field-group">
-          <div class="field-header">
-            <span class="field-label">Monthly WhatsApp messages</span>
-            <span class="field-val" id="p-msgs-val">15,000</span>
-          </div>
-          <input id="p-msgs" type="range" min="1000" max="1000000" step="1000" value="15000" />
-        </div>
-        <div class="field-group">
-          <div class="field-header"><span class="field-label">Account status</span></div>
-          <div class="toggle-row">
-            <button class="toggle-btn active" id="p-new">New customer</button>
-            <button class="toggle-btn" id="p-existing">Existing customer</button>
-          </div>
-        </div>
-        <div class="calc-cta">
-          <a href="https://wa.me/971523709989?text=Hi+Espacios%2C+I%27d+like+a+quote+based+on+this+estimate." target="_blank" rel="noopener" class="btn-dark">
-            Get a custom quote
-            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
-        </div>
-      </div>
-      <div>
-        <div class="results-panel">
-          <div class="results-header"><span class="results-header-label">Estimated cost breakdown</span></div>
-          <div class="results-rows" aria-live="polite">
-            <div class="result-row" id="p-setup-row"><span class="result-key">Setup fee (one-time)</span><span class="result-val" id="p-setup">AED 750</span></div>
-            <div class="result-row"><span class="result-key">Base platform fee</span><span class="result-val">AED 110 / mo</span></div>
-            <div class="result-row"><span class="result-key" id="p-usage-label">Message usage (15,000)</span><span class="result-val" id="p-usage">AED 975 / mo</span></div>
-            <div class="result-row"><span class="result-key">Execution fee</span><span class="result-val">from AED 2,500 / mo</span></div>
-            <div class="result-row total"><span class="result-key">First month total</span><span class="result-val" id="p-first">AED 4,335</span></div>
-            <div class="result-row total"><span class="result-key">Monthly from month 2</span><span class="result-val" id="p-ongoing">AED 3,585</span></div>
-          </div>
-        </div>
-        <p class="fine-print">Message usage billed in arrears. Execution fee scales with lead volume and campaign complexity.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ROI CALCULATOR -->
-<section class="section" id="roi">
-  <div class="section-in wide">
-    <div class="fade-in">
-      <p class="s-label">ROI calculator</p>
-      <h2 class="s-title">Calculate your return.</h2>
-      <p class="s-sub">Benchmarks only — real results depend on market, creative, and targeting quality.</p>
-    </div>
-    <div class="calc-grid fade-in">
-      <div class="calc-controls">
-        <div class="field-group">
-          <div class="field-header">
-            <span class="field-label">Monthly qualified leads</span>
-            <span class="field-val" id="r-leads-val">50</span>
-          </div>
-          <input id="r-leads" type="range" min="10" max="500" step="1" value="50" />
-        </div>
-        <div class="field-group">
-          <div class="field-header">
-            <span class="field-label">Close rate (%)</span>
-            <span class="field-val" id="r-close-val">10%</span>
-          </div>
-          <input id="r-close" type="range" min="1" max="30" step="1" value="10" />
-        </div>
-        <div class="field-group">
-          <div class="field-header">
-            <span class="field-label">Avg commission (AED)</span>
-            <span class="field-val" id="r-comm-val">30,000</span>
-          </div>
-          <input id="r-comm" type="range" min="5000" max="100000" step="500" value="30000" />
-        </div>
-        <div class="field-group">
-          <div class="field-header">
-            <span class="field-label">Monthly investment (AED)</span>
-            <span class="field-val" id="r-inv-val">3,000</span>
-          </div>
-          <input id="r-inv" type="range" min="2610" max="30000" step="10" value="3000" />
-        </div>
-        <p class="fine-print">These are estimates. Espacios does not guarantee specific lead volumes, close rates, or revenue outcomes.</p>
-      </div>
-      <div>
-        <div class="results-panel">
-          <div class="results-header"><span class="results-header-label">Projected return</span></div>
-          <div class="results-rows" aria-live="polite">
-            <div class="result-row"><span class="result-key">Deals closed / month</span><span class="result-val" id="r-deals">5.0 deals</span></div>
-            <div class="result-row"><span class="result-key">Revenue generated</span><span class="result-val" id="r-rev">AED 150,000</span></div>
-            <div class="result-row"><span class="result-key">Your investment</span><span class="result-val" id="r-inv-out">AED 3,000</span></div>
-            <div class="result-row"><span class="result-key">Net profit</span><span class="result-val green" id="r-profit">AED 147,000</span></div>
-            <div class="result-row total"><span class="result-key">ROI</span><span class="result-val green" id="r-roi">4,900%</span></div>
-            <div class="result-row total"><span class="result-key">Break-even leads needed</span><span class="result-val" id="r-be">1 lead</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ATOM SECTION -->
-<section class="section" id="atom">
-  <div class="section-in wide fade-in">
-    <div class="atom-section">
-      <div class="atom-grid">
+  <div class="dock" id="dock">
+    <button class="orb-button" id="orbButton" type="button" aria-label="Open AI menu" aria-expanded="false"></button>
+    <div class="dock-panel" id="dockPanel" role="dialog" aria-label="AI navigation panel">
+      <div class="dock-head">
         <div>
-          <p class="atom-s-label">atom · by espacios</p>
-          <h2 class="atom-s-title">Your AI memory, on WhatsApp.</h2>
-          <p class="atom-s-sub">Atom is a personal AI assistant that lives in your WhatsApp. It remembers everything, reminds you when it matters, and helps you stay on top of your goals — quietly, in the background.</p>
-          <div class="atom-features">
-            <div class="atom-feat">
-              <div class="atom-feat-ico"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
-              <div>
-                <div class="atom-feat-title">Instant memory capture</div>
-                <div class="atom-feat-desc">Save anything. Recall everything. No app to open — just your WhatsApp number.</div>
+          <div class="dock-title">espacios AI</div>
+          <div class="dock-sub">Gemini-ready placeholder</div>
+        </div>
+        <div class="dock-badge">beta</div>
+      </div>
+      <div class="dock-links">
+        <a class="dock-link" href="#top">Overview</a>
+        <a class="dock-link" href="#services">Services</a>
+        <a class="dock-link" href="#pricing">Pricing</a>
+        <a class="dock-link" href="#roi">ROI</a>
+        <a class="dock-link" href="#atom">Atom</a>
+        <a class="dock-link" href="#contact">Contact</a>
+      </div>
+      <div class="dock-actions">
+        <a class="btn" href="https://wa.me/971523709989?text=Hi%20Espacios%2C%20I%27d%20like%20a%20custom%20quote." target="_blank" rel="noopener">Start on WhatsApp</a>
+        <button class="btn-ghost" id="closeDock" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="page">
+    <section class="hero" id="top">
+      <div class="hero-inner">
+        <div class="eyebrow">AI messaging ops · UAE real estate</div>
+        <h1>Capture demand.<br><span class="soft">Qualify instantly.</span><br>Convert faster.</h1>
+        <p>Espacios builds lean acquisition and qualification systems for real estate teams. WhatsApp-first. AI-native. Designed to move like an operator, not a template.</p>
+        <div class="hero-actions">
+          <a class="btn" href="https://wa.me/971523709989?text=Hi%20Espacios%2C%20I%27d%20like%20a%20custom%20quote." target="_blank" rel="noopener">Get a custom quote</a>
+          <a class="btn-ghost" href="#services">See what we build</a>
+          <a class="btn-ghost" href="#pricing">See pricing</a>
+        </div>
+        <div class="hero-metrics">
+          <div class="metric"><strong>&lt; 5 min</strong><span>Average qualification time with AI-driven intake.</span></div>
+          <div class="metric"><strong>7 langs</strong><span>Multi-language support for faster regional coverage.</span></div>
+          <div class="metric"><strong>AED 110</strong><span>Base platform starting point before execution.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="services">
+      <div class="section-inner">
+        <div class="section-kicker">What we build</div>
+        <h2 class="section-title">End-to-end infrastructure for lead-driven teams.</h2>
+        <p class="section-copy">Six capabilities that run from first inbound signal to agent handoff without clutter, delay, or wasted conversations.</p>
+        <div class="cards">
+          <article class="card"><div class="card-num">01</div><h3>Lead Generation System</h3><p>Multi-channel campaigns that fill your pipeline with buyers across Meta, Google, and organic channels.</p></article>
+          <article class="card"><div class="card-num">02</div><h3>Instant Qualification Engine</h3><p>AI qualifies every lead on WhatsApp in under 5 minutes with budget, timeline, intent, and purpose captured automatically.</p></article>
+          <article class="card"><div class="card-num">03</div><h3>Data Enrichment & Routing</h3><p>Clean structured data, CRM sync, and intelligent assignment based on your routing logic.</p></article>
+          <article class="card"><div class="card-num">04</div><h3>Automation Infrastructure</h3><p>Follow-up sequences, reminders, routing events, and workflow triggers built for speed.</p></article>
+          <article class="card"><div class="card-num">05</div><h3>Ongoing Optimization</h3><p>Weekly testing, AI tuning, messaging refinement, and conversion-focused iteration.</p></article>
+          <article class="card"><div class="card-num">06</div><h3>Reporting & Analytics</h3><p>Real-time pipeline visibility, CPL tracking, agent metrics, and attribution across channels.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="pricing">
+      <div class="section-inner">
+        <div class="section-kicker">Pricing</div>
+        <h2 class="section-title">Estimate your monthly cost.</h2>
+        <p class="section-copy">Adjust your message volume to get a clean cost view. No extra libraries. No heavy front-end load.</p>
+        <div class="calc-grid">
+          <div class="panel">
+            <div class="field">
+              <div class="field-head"><span class="label">Monthly WhatsApp messages</span><span class="value" id="p-msgs-val">15,000</span></div>
+              <input id="p-msgs" type="range" min="1000" max="1000000" step="1000" value="15000" />
+            </div>
+            <div class="field">
+              <div class="field-head"><span class="label">Account status</span></div>
+              <div class="toggle-row">
+                <button class="toggle active" id="p-new" type="button">New customer</button>
+                <button class="toggle" id="p-existing" type="button">Existing customer</button>
               </div>
             </div>
-            <div class="atom-feat">
-              <div class="atom-feat-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-              <div>
-                <div class="atom-feat-title">Reminders</div>
-                <div class="atom-feat-desc">Natural language scheduling. Fires when you need it, even when you're offline.</div>
-              </div>
-            </div>
-            <div class="atom-feat">
-              <div class="atom-feat-ico"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-              <div>
-                <div class="atom-feat-title">Goal intelligence</div>
-                <div class="atom-feat-desc">Atom learns your goals and silently scores your day against them — nudging you when it counts.</div>
-              </div>
+            <div class="panel-actions">
+              <a class="btn" href="https://wa.me/971523709989?text=Hi%20Espacios%2C%20I%27d%20like%20a%20quote%20based%20on%20this%20estimate." target="_blank" rel="noopener">Get a custom quote</a>
             </div>
           </div>
-          <div style="margin-top: 32px;">
-            <a href="https://wa.me/971523709989?text=Hi+Espacios%2C+please+add+me+to+the+Atom+waitlist." target="_blank" rel="noopener" class="btn-primary">
-              Join the waitlist
-              <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
+          <div>
+            <div class="result-panel">
+              <div class="result-head">Estimated cost breakdown</div>
+              <div class="row" id="p-setup-row"><span class="key">Setup fee (one-time)</span><span class="val" id="p-setup">AED 750</span></div>
+              <div class="row"><span class="key">Base platform fee</span><span class="val">AED 110 / mo</span></div>
+              <div class="row"><span class="key" id="p-usage-label">Message usage (15,000)</span><span class="val" id="p-usage">AED 975 / mo</span></div>
+              <div class="row"><span class="key">Execution fee</span><span class="val">from AED 2,500 / mo</span></div>
+              <div class="row total"><span class="key">First month total</span><span class="val" id="p-first">AED 4,335</span></div>
+              <div class="row total"><span class="key">Monthly from month 2</span><span class="val" id="p-ongoing">AED 3,585</span></div>
+            </div>
+            <p class="fine">Message usage billed in arrears. Execution fee scales with lead volume and campaign complexity.</p>
           </div>
         </div>
-        <div>
-          <div class="chat-shell">
-            <div class="chat-top">
-              <div class="chat-top-left">
-                <div class="chat-avatar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></div>
-                <div><div class="chat-name">atom·</div><div class="chat-status">by espacios</div></div>
-              </div>
-              <div class="chat-online"><span class="chat-online-dot"></span> Online</div>
+      </div>
+    </section>
+
+    <section class="section" id="roi">
+      <div class="section-inner">
+        <div class="section-kicker">ROI calculator</div>
+        <h2 class="section-title">Calculate your return.</h2>
+        <p class="section-copy">Fast inputs. Instant outputs. Lightweight vanilla JS only.</p>
+        <div class="calc-grid">
+          <div class="panel">
+            <div class="field">
+              <div class="field-head"><span class="label">Monthly qualified leads</span><span class="value" id="r-leads-val">50</span></div>
+              <input id="r-leads" type="range" min="10" max="500" step="1" value="50" />
             </div>
-            <div class="chat-body">
-              <div class="bubble user">Remember that my lawyer is Ahmed at Al Tamimi, +971 50 123 4567</div>
-              <div class="bubble ai">Got it 📝 Saved Ahmed's details — Al Tamimi, +971 50 123 4567.</div>
-              <div class="bubble user">Remind me to follow up with him Thursday at 10am</div>
-              <div class="bubble ai">⏰ Done — Thursday 10:00 AM. Follow up with Ahmed at Al Tamimi.</div>
-              <div class="bubble user">What should I focus on today?</div>
-              <div class="bubble ai">Based on your goals, I'd prioritize the Nshama brief — you haven't touched it in 4 days and it maps to your top quarterly target.</div>
+            <div class="field">
+              <div class="field-head"><span class="label">Close rate (%)</span><span class="value" id="r-close-val">10%</span></div>
+              <input id="r-close" type="range" min="1" max="30" step="1" value="10" />
+            </div>
+            <div class="field">
+              <div class="field-head"><span class="label">Avg commission (AED)</span><span class="value" id="r-comm-val">30,000</span></div>
+              <input id="r-comm" type="range" min="5000" max="100000" step="500" value="30000" />
+            </div>
+            <div class="field">
+              <div class="field-head"><span class="label">Monthly investment (AED)</span><span class="value" id="r-inv-val">3,000</span></div>
+              <input id="r-inv" type="range" min="2610" max="30000" step="10" value="3000" />
+            </div>
+            <p class="fine">These are estimates. Espacios does not guarantee specific lead volumes, close rates, or revenue outcomes.</p>
+          </div>
+          <div class="result-panel">
+            <div class="result-head">Projected return</div>
+            <div class="row"><span class="key">Deals closed / month</span><span class="val" id="r-deals">5.0 deals</span></div>
+            <div class="row"><span class="key">Revenue generated</span><span class="val" id="r-rev">AED 150,000</span></div>
+            <div class="row"><span class="key">Your investment</span><span class="val" id="r-inv-out">AED 3,000</span></div>
+            <div class="row"><span class="key">Net profit</span><span class="val" id="r-profit">AED 147,000</span></div>
+            <div class="row total"><span class="key">ROI</span><span class="val" id="r-roi">4,900%</span></div>
+            <div class="row total"><span class="key">Break-even leads needed</span><span class="val" id="r-be">1 lead</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="atom">
+      <div class="section-inner">
+        <div class="atom-shell">
+          <div class="section-kicker">atom · by espacios</div>
+          <h2 class="section-title">Your AI memory, on WhatsApp.</h2>
+          <p class="section-copy">A minimal placeholder for the Gemini layer you plan to add. Right now the orb acts as the product shell and navigation surface.</p>
+          <div class="atom-grid" style="margin-top: 24px;">
+            <div>
+              <div class="atom-feature"><div class="atom-ico">01</div><div><h3>Instant memory capture</h3><p>Save anything. Recall everything. No extra app — just WhatsApp.</p></div></div>
+              <div class="atom-feature"><div class="atom-ico">02</div><div><h3>Reminders</h3><p>Natural-language scheduling that stays out of the way until needed.</p></div></div>
+              <div class="atom-feature"><div class="atom-ico">03</div><div><h3>Goal intelligence</h3><p>Score your day against your priorities and nudge the next best move.</p></div></div>
+              <div style="margin-top: 22px;"><a class="btn" href="https://wa.me/971523709989?text=Hi%20Espacios%2C%20please%20add%20me%20to%20the%20Atom%20waitlist." target="_blank" rel="noopener">Join the waitlist</a></div>
+            </div>
+            <div class="chat">
+              <div class="chat-top"><div><div class="chat-name">espacios AI</div><div class="chat-sub">Gemini-ready placeholder</div></div><div class="online">online</div></div>
+              <div class="chat-body">
+                <div class="bubble user">Remember that my lawyer is Ahmed at Al Tamimi.</div>
+                <div class="bubble ai">Saved. I’ll keep Ahmed in working memory for future prompts.</div>
+                <div class="bubble user">Remind me Thursday at 10am to follow up.</div>
+                <div class="bubble ai">Done. Thursday 10:00 AM follow-up is scheduled.</div>
+                <div class="bubble user">What matters most today?</div>
+                <div class="bubble ai">Based on your goals, the highest-leverage move is pushing the current real-estate lead system live.</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- CTA BAND -->
-<div class="cta-band fade-in">
-  <p class="s-label" style="margin-bottom: 14px;">Get started</p>
-  <h2 class="s-title" style="margin-bottom: 12px;">Ready to build your system?</h2>
-  <p style="font-size: 15px; color: var(--muted); line-height: 1.6; margin-bottom: 32px; max-width: 480px; margin-left: auto; margin-right: auto;">Message us on WhatsApp and we'll map out your lead system directly — no forms, no waiting.</p>
-  <a href="https://wa.me/971523709989?text=Hi+Espacios%2C+I%27d+like+to+talk+about+our+team+and+lead+system." target="_blank" rel="noopener" class="btn-primary">
-    Message on WhatsApp
-    <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-  </a>
-</div>
+    <section class="cta" id="contact">
+      <div class="section-kicker">Get started</div>
+      <h2 class="section-title">Ready to build your system?</h2>
+      <p>Message us on WhatsApp and we’ll map the lead system with you directly. This page is lighter, darker, and structured for your Gemini handoff later.</p>
+      <a class="btn" href="https://wa.me/971523709989?text=Hi%20Espacios%2C%20I%27d%20like%20to%20talk%20about%20our%20team%20and%20lead%20system." target="_blank" rel="noopener">Message on WhatsApp</a>
+    </section>
 
-<!-- FOOTER -->
-<footer class="footer">
-  <a href="#" class="footer-brand">espacios</a>
-  <div class="footer-links">
-    <a href="#services" class="footer-link">Services</a>
-    <a href="#pricing" class="footer-link">Pricing</a>
-    <a href="#atom" class="footer-link">Atom</a>
-    <a href="atom-landing.html" class="footer-link">atom·</a>
-    <a href="espacios-privacy.html" class="footer-link">Privacy</a>
-    <a href="espacios-terms.html" class="footer-link">Terms</a>
-    <a href="mailto:hello@espacios.me" class="footer-link">hello@espacios.me</a>
-    <a href="https://wa.me/971523709989" target="_blank" rel="noopener" class="footer-link">+971 52 370 9989</a>
-  </div>
-  <p class="footer-copy">© 2025 espacios. All rights reserved.</p>
-</footer>
+    <footer class="footer">
+      <a class="footer-brand" href="#top">espacios</a>
+      <div class="footer-links">
+        <a class="footer-link" href="#services">Services</a>
+        <a class="footer-link" href="#pricing">Pricing</a>
+        <a class="footer-link" href="#roi">ROI</a>
+        <a class="footer-link" href="#atom">Atom</a>
+        <a class="footer-link" href="mailto:hello@espacios.me">hello@espacios.me</a>
+        <a class="footer-link" href="https://wa.me/971523709989" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+      <div class="footer-copy">© 2026 espacios. All rights reserved.</div>
+    </footer>
+  </main>
 
-<script>
-(function() {
-  const faders = document.querySelectorAll('.fade-in');
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-vis'); io.unobserve(e.target); } });
-  }, { threshold: 0.08 });
-  faders.forEach(el => io.observe(el));
+  <script>
+    (() => {
+      const fmt = (n) => Number(n).toLocaleString('en-US');
 
-  const fmt = n => Number(n).toLocaleString('en-US');
-  const pMsgs = document.getElementById('p-msgs');
-  const pNew = document.getElementById('p-new');
-  const pExisting = document.getElementById('p-existing');
-  let isNew = true;
+      const dock = document.getElementById('dock');
+      const orbButton = document.getElementById('orbButton');
+      const dockPanel = document.getElementById('dockPanel');
+      const closeDock = document.getElementById('closeDock');
 
-  function getRate(m) {
-    if (m <= 5000) return 0.075;
-    if (m <= 20000) return 0.065;
-    if (m <= 100000) return 0.055;
-    if (m <= 250000) return 0.045;
-    return 0.035;
-  }
-  function updatePricing() {
-    const msgs = +pMsgs.value;
-    const setup = isNew ? 750 : 0;
-    const usage = Math.round(msgs * getRate(msgs));
-    const base = 110, exec = 2500;
-    document.getElementById('p-msgs-val').textContent = fmt(msgs);
-    document.getElementById('p-usage-label').textContent = 'Message usage (' + fmt(msgs) + ')';
-    document.getElementById('p-usage').textContent = 'AED ' + fmt(usage) + ' / mo';
-    document.getElementById('p-setup-row').style.display = isNew ? 'flex' : 'none';
-    document.getElementById('p-first').textContent = 'AED ' + fmt(setup + base + usage + exec);
-    document.getElementById('p-ongoing').textContent = 'AED ' + fmt(base + usage + exec);
-    pNew.classList.toggle('active', isNew);
-    pExisting.classList.toggle('active', !isNew);
-  }
-  pMsgs.addEventListener('input', updatePricing);
-  pNew.addEventListener('click', () => { isNew = true; updatePricing(); });
-  pExisting.addEventListener('click', () => { isNew = false; updatePricing(); });
-  updatePricing();
+      const setDockState = () => {
+        if (window.scrollY > 80) {
+          document.body.classList.add('docked');
+        } else {
+          document.body.classList.remove('docked');
+        }
+      };
+      setDockState();
+      window.addEventListener('scroll', setDockState, { passive: true });
 
-  const rLeads = document.getElementById('r-leads');
-  const rClose = document.getElementById('r-close');
-  const rComm = document.getElementById('r-comm');
-  const rInv = document.getElementById('r-inv');
-  function updateROI() {
-    const leads = +rLeads.value, close = +rClose.value,
-          comm = +rComm.value, inv = +rInv.value;
-    document.getElementById('r-leads-val').textContent = fmt(leads);
-    document.getElementById('r-close-val').textContent = fmt(close) + '%';
-    document.getElementById('r-comm-val').textContent = fmt(comm);
-    document.getElementById('r-inv-val').textContent = fmt(inv);
-    const deals = leads * (close / 100);
-    const rev = deals * comm;
-    const profit = rev - inv;
-    const roi = inv === 0 ? 0 : (profit / inv) * 100;
-    const be = close === 0 ? 0 : Math.ceil((inv / comm) / (close / 100));
-    document.getElementById('r-deals').textContent = deals.toFixed(1) + ' deals';
-    document.getElementById('r-rev').textContent = 'AED ' + fmt(Math.round(rev));
-    document.getElementById('r-inv-out').textContent = 'AED ' + fmt(inv);
-    document.getElementById('r-profit').textContent = 'AED ' + fmt(Math.round(profit));
-    document.getElementById('r-roi').textContent = fmt(Math.round(roi)) + '%';
-    document.getElementById('r-be').textContent = be + ' lead' + (be !== 1 ? 's' : '');
-  }
-  [rLeads,rClose,rComm,rInv].forEach(el => el.addEventListener('input', updateROI));
-  updateROI();
-})();
-</script>
+      const closePanel = () => {
+        dock.classList.remove('open');
+        orbButton.setAttribute('aria-expanded', 'false');
+      };
+      const openPanel = () => {
+        dock.classList.add('open');
+        orbButton.setAttribute('aria-expanded', 'true');
+      };
+      orbButton.addEventListener('click', () => {
+        if (dock.classList.contains('open')) closePanel();
+        else openPanel();
+      });
+      closeDock.addEventListener('click', closePanel);
+      document.addEventListener('click', (e) => {
+        if (!dock.contains(e.target)) closePanel();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closePanel();
+      });
+      dockPanel.querySelectorAll('a').forEach((a) => a.addEventListener('click', closePanel));
+
+      const pMsgs = document.getElementById('p-msgs');
+      const pMsgsVal = document.getElementById('p-msgs-val');
+      const pNew = document.getElementById('p-new');
+      const pExisting = document.getElementById('p-existing');
+      let isNew = true;
+
+      const getRate = (m) => {
+        if (m <= 5000) return 0.075;
+        if (m <= 20000) return 0.065;
+        if (m <= 100000) return 0.055;
+        if (m <= 250000) return 0.045;
+        return 0.035;
+      };
+
+      const updatePricing = () => {
+        const msgs = +pMsgs.value;
+        const setup = isNew ? 750 : 0;
+        const usage = Math.round(msgs * getRate(msgs));
+        const base = 110;
+        const exec = 2500;
+        pMsgsVal.textContent = fmt(msgs);
+        document.getElementById('p-usage-label').textContent = `Message usage (${fmt(msgs)})`;
+        document.getElementById('p-usage').textContent = `AED ${fmt(usage)} / mo`;
+        document.getElementById('p-setup-row').style.display = isNew ? 'flex' : 'none';
+        document.getElementById('p-first').textContent = `AED ${fmt(setup + base + usage + exec)}`;
+        document.getElementById('p-ongoing').textContent = `AED ${fmt(base + usage + exec)}`;
+        pNew.classList.toggle('active', isNew);
+        pExisting.classList.toggle('active', !isNew);
+      };
+
+      pMsgs.addEventListener('input', updatePricing);
+      pNew.addEventListener('click', () => { isNew = true; updatePricing(); });
+      pExisting.addEventListener('click', () => { isNew = false; updatePricing(); });
+      updatePricing();
+
+      const rLeads = document.getElementById('r-leads');
+      const rClose = document.getElementById('r-close');
+      const rComm = document.getElementById('r-comm');
+      const rInv = document.getElementById('r-inv');
+
+      const updateROI = () => {
+        const leads = +rLeads.value;
+        const close = +rClose.value;
+        const comm = +rComm.value;
+        const inv = +rInv.value;
+        document.getElementById('r-leads-val').textContent = fmt(leads);
+        document.getElementById('r-close-val').textContent = `${fmt(close)}%`;
+        document.getElementById('r-comm-val').textContent = fmt(comm);
+        document.getElementById('r-inv-val').textContent = fmt(inv);
+        const deals = leads * (close / 100);
+        const rev = deals * comm;
+        const profit = rev - inv;
+        const roi = inv === 0 ? 0 : (profit / inv) * 100;
+        const be = close === 0 ? 0 : Math.ceil((inv / comm) / (close / 100));
+        document.getElementById('r-deals').textContent = `${deals.toFixed(1)} deals`;
+        document.getElementById('r-rev').textContent = `AED ${fmt(Math.round(rev))}`;
+        document.getElementById('r-inv-out').textContent = `AED ${fmt(inv)}`;
+        document.getElementById('r-profit').textContent = `AED ${fmt(Math.round(profit))}`;
+        document.getElementById('r-roi').textContent = `${fmt(Math.round(roi))}%`;
+        document.getElementById('r-be').textContent = `${be} lead${be === 1 ? '' : 's'}`;
+      };
+
+      [rLeads, rClose, rComm, rInv].forEach((el) => el.addEventListener('input', updateROI));
+      updateROI();
+    })();
+  </script>
 </body>
 </html>
