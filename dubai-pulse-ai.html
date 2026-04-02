@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dubai Pulse AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          boxShadow: {
+            luxe: '0 12px 40px rgba(15, 23, 42, 0.18)',
+            glow: '0 0 0 3px rgba(99,102,241,0.25), 0 10px 24px rgba(99,102,241,0.35)'
+          },
+          keyframes: {
+            floatIn: {
+              '0%': { opacity: '0', transform: 'translateY(12px) scale(.98)' },
+              '100%': { opacity: '1', transform: 'translateY(0) scale(1)' }
+            },
+            pulseDot: {
+              '0%,100%': { transform: 'scale(1)', opacity: '.8' },
+              '50%': { transform: 'scale(1.25)', opacity: '1' }
+            }
+          },
+          animation: {
+            floatIn: 'floatIn .28s ease-out',
+            pulseDot: 'pulseDot 1.5s infinite'
+          }
+        }
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+    }
+    .mid-theme {
+      background: linear-gradient(180deg, #f7f7ff 0%, #eef2ff 100%);
+    }
+    .glass {
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: rgba(255,255,255,0.62);
+    }
+    .dark .glass {
+      background: rgba(15,23,42,0.6);
+    }
+    .masonry {
+      column-gap: 1rem;
+    }
+    @media (max-width: 639px) { .masonry { column-count: 2; } }
+    @media (min-width: 640px) and (max-width: 1023px) { .masonry { column-count: 3; } }
+    @media (min-width: 1024px) { .masonry { column-count: 4; } }
+    .masonry-item {
+      break-inside: avoid;
+      margin-bottom: 1rem;
+      transform-origin: center;
+      transition: transform .25s ease, box-shadow .25s ease, opacity .25s ease;
+    }
+    .masonry-item:hover { transform: translateY(-2px) scale(1.01); }
+    .modal-enter { animation: floatIn .25s ease-out; }
+    .drag-ghost {
+      position: fixed;
+      z-index: 70;
+      pointer-events: none;
+      padding: .45rem .8rem;
+      border-radius: 999px;
+      font-size: .8rem;
+      background: rgba(79,70,229,.95);
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(79,70,229,.25);
+    }
+  </style>
+</head>
+<body class="h-full bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors mid-theme" id="appBody">
+  <div class="min-h-full pb-40">
+    <!-- Top Navbar -->
+    <header class="sticky top-0 z-40 border-b border-slate-200/70 dark:border-slate-700/60 glass">
+      <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-2">
+          <div class="text-2xl" aria-hidden="true">🏠</div>
+          <div>
+            <h1 class="text-lg sm:text-xl font-black tracking-tight">Dubai Pulse AI</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Pinterest-style Dubai property intelligence</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="refreshBtn" class="px-3 py-2 rounded-full text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400" aria-label="Refresh from DXB Interact">Refresh from DXB Interact</button>
+          <div class="relative">
+            <button id="profileBtn" aria-haspopup="menu" aria-expanded="false" aria-controls="profileMenu" class="w-11 h-11 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-luxe flex items-center justify-center text-xl relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
+              🏠
+              <span class="absolute -right-0.5 -bottom-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white dark:border-slate-800 animate-pulseDot" aria-hidden="true"></span>
+            </button>
+            <div id="profileMenu" role="menu" class="hidden absolute right-0 mt-2 w-44 p-2 rounded-2xl glass border border-white/70 dark:border-slate-700 shadow-luxe">
+              <p class="text-xs px-2 pb-2 text-slate-500 dark:text-slate-400">Choose your vibe</p>
+              <button class="vibe-btn w-full text-left px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800" data-vibe="dark">Dark 🌑</button>
+              <button class="vibe-btn w-full text-left px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800" data-vibe="light">Light ☀️</button>
+              <button class="vibe-btn w-full text-left px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800" data-vibe="mid">Mid 🌗</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-4 space-y-4" id="mainContent">
+      <!-- AI Personalization Banner -->
+      <section class="rounded-3xl p-4 sm:p-5 bg-gradient-to-r from-fuchsia-500 to-indigo-600 text-white shadow-luxe" aria-live="polite">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <h2 class="font-bold text-base sm:text-lg">AI is learning from you ❤️</h2>
+            <p class="text-sm text-white/85">Personalized in real-time based on taps, alerts, and chats.</p>
+          </div>
+          <div class="text-right">
+            <p class="text-xs uppercase tracking-wide text-white/80">Interactions today</p>
+            <p id="interactionCount" class="text-2xl font-black">0</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- News/Alert Pills -->
+      <section class="rounded-2xl p-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm" aria-label="News and alerts">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <p class="text-sm font-semibold">News & Alerts</p>
+          <button id="toggleAlerts" class="text-xs px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800">Toggle</button>
+        </div>
+        <div id="alertsPanel" class="mt-3 flex flex-wrap gap-2"></div>
+      </section>
+
+      <!-- Branded Residences Carousel -->
+      <section aria-label="Top branded residences" class="space-y-2">
+        <h2 class="text-lg font-bold">Top 10 Branded Residences</h2>
+        <div id="brandedCarousel" class="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory"></div>
+      </section>
+
+      <!-- AI Chat Responses -->
+      <section id="chatReplies" class="space-y-3" aria-live="polite"></section>
+
+      <!-- Masonry Property Grid -->
+      <section>
+        <div id="propertyGrid" class="masonry" aria-label="Property discovery feed"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Bottom fixed chat bar -->
+  <div class="fixed bottom-4 inset-x-0 px-3 sm:px-6 z-40">
+    <div class="max-w-4xl mx-auto glass border border-white/70 dark:border-slate-700 rounded-full shadow-luxe px-4 py-2 flex items-center gap-3">
+      <button aria-label="Voice input" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">🎙️</button>
+      <input id="chatInput" aria-label="Ask AI anything about Dubai real estate" class="flex-1 bg-transparent outline-none text-sm sm:text-base placeholder:text-slate-400" placeholder="Ask AI anything about Dubai real estate..." />
+      <button id="sendBtn" aria-label="Send message" class="w-11 h-11 rounded-full bg-indigo-600 text-white text-xl hover:bg-indigo-700 focus-visible:ring-2 focus-visible:ring-indigo-300">➤</button>
+    </div>
+  </div>
+
+  <!-- Property Detail Modal -->
+  <div id="propertyModal" class="hidden fixed inset-0 z-50 bg-slate-900/45 backdrop-blur-sm p-3 sm:p-8">
+    <div class="max-w-5xl mx-auto h-full flex items-center">
+      <article id="modalCard" class="w-full max-h-[92vh] overflow-y-auto rounded-3xl glass border border-white/70 dark:border-slate-700 shadow-luxe modal-enter"></article>
+    </div>
+  </div>
+
+  <!-- Refresh Modal -->
+  <div id="refreshModal" class="hidden fixed inset-0 z-50 bg-slate-900/45 backdrop-blur-sm p-4">
+    <div class="max-w-2xl mx-auto mt-16 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-luxe p-5">
+      <div class="flex justify-between items-start gap-2">
+        <div>
+          <h3 class="text-xl font-bold">Latest DXB Interact snapshot (April 2, 2026)</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400">619 deals • AED 2.5B total</p>
+        </div>
+        <button id="closeRefreshModal" class="px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800">Close</button>
+      </div>
+      <textarea id="snapshotInput" class="mt-4 w-full min-h-[160px] rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 p-3 text-sm" placeholder="Paste summary lines like: Dubai Marina | AED 2.6M | ROI 7.5"></textarea>
+      <button id="submitSnapshot" class="mt-3 px-4 py-2 rounded-xl bg-indigo-600 text-white font-semibold">Update feed now</button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="hidden fixed top-20 right-4 z-[60] px-4 py-3 rounded-xl bg-emerald-600 text-white shadow-luxe"></div>
+
+<script>
+(() => {
+  // -----------------------
+  // Demo data: can scale to 600+ properties later.
+  // -----------------------
+  const properties = [
+    { id: 1, name: "Dubai Hills Estate", thumbnail: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80", startPrice: "AED 1.8M", location: "Dubai Hills", sqm: 112, tags: ["branded", "off-plan", "family"], roi: 7.2, completion_date: "Q4 2027", payment_plan: "80/20 with 10% booking", historical_prices: [{date:"2024-01",pricePerSqft:1450},{date:"2024-07",pricePerSqft:1530},{date:"2025-01",pricePerSqft:1610},{date:"2025-09",pricePerSqft:1710},{date:"2026-03",pricePerSqft:1830}], latest_transaction: "AED 2.35M on 01 Apr 2026 via DXB Interact" },
+    { id: 2, name: "Creek Harbour Residences", thumbnail: "https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=900&q=80", startPrice: "AED 1.95M", location: "Dubai Creek Harbour", sqm: 98, tags: ["beachfront", "off-plan"], roi: 7.0, completion_date: "Q2 2027", payment_plan: "70/30 post-handover", historical_prices: [{date:"2024-01",pricePerSqft:1380},{date:"2024-08",pricePerSqft:1470},{date:"2025-04",pricePerSqft:1560},{date:"2026-03",pricePerSqft:1690}], latest_transaction: "AED 2.1M on 29 Mar 2026 via DXB Interact" },
+    { id: 3, name: "Palm Jumeirah Signature", thumbnail: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80", startPrice: "AED 4.9M", location: "Palm Jumeirah", sqm: 176, tags: ["beachfront", "ready", "luxury"], roi: 6.4, completion_date: "Ready", payment_plan: "Flexible mortgage", historical_prices: [{date:"2024-01",pricePerSqft:2800},{date:"2024-10",pricePerSqft:2950},{date:"2025-07",pricePerSqft:3120},{date:"2026-03",pricePerSqft:3360}], latest_transaction: "AED 5.6M on 02 Apr 2026 via DXB Interact" },
+    { id: 4, name: "Rashid Yachts & Marina", thumbnail: "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=900&q=80", startPrice: "AED 2.2M", location: "Mina Rashid", sqm: 121, tags: ["waterfront", "off-plan"], roi: 7.8, completion_date: "Q1 2028", payment_plan: "75/25", historical_prices: [{date:"2024-02",pricePerSqft:1420},{date:"2024-09",pricePerSqft:1510},{date:"2025-09",pricePerSqft:1640},{date:"2026-03",pricePerSqft:1775}], latest_transaction: "AED 2.48M on 31 Mar 2026 via DXB Interact" },
+    { id: 5, name: "Dubai Marina Sky Deck", thumbnail: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=900&q=80", startPrice: "AED 2.0M", location: "Dubai Marina", sqm: 105, tags: ["ready", "investor"], roi: 8.1, completion_date: "Ready", payment_plan: "Cash / mortgage", historical_prices: [{date:"2024-01",pricePerSqft:1680},{date:"2024-11",pricePerSqft:1790},{date:"2025-10",pricePerSqft:1910},{date:"2026-03",pricePerSqft:2020}], latest_transaction: "AED 2.42M on 30 Mar 2026 via DXB Interact" },
+    { id: 6, name: "Business Bay Wave", thumbnail: "https://images.unsplash.com/photo-1600047509358-9dc75507daeb?auto=format&fit=crop&w=900&q=80", startPrice: "AED 1.5M", location: "Business Bay", sqm: 84, tags: ["branded", "off-plan"], roi: 8.3, completion_date: "Q4 2026", payment_plan: "60/40", historical_prices: [{date:"2024-03",pricePerSqft:1350},{date:"2024-12",pricePerSqft:1440},{date:"2025-08",pricePerSqft:1530},{date:"2026-03",pricePerSqft:1625}], latest_transaction: "AED 1.78M on 27 Mar 2026 via DXB Interact" },
+    { id: 7, name: "Jumeirah Village Circle Verde", thumbnail: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=900&q=80", startPrice: "AED 890K", location: "JVC", sqm: 69, tags: ["affordable", "ready"], roi: 9.1, completion_date: "Ready", payment_plan: "Mortgage eligible", historical_prices: [{date:"2024-01",pricePerSqft:950},{date:"2024-09",pricePerSqft:1025},{date:"2025-08",pricePerSqft:1110},{date:"2026-03",pricePerSqft:1180}], latest_transaction: "AED 1.02M on 28 Mar 2026 via DXB Interact" },
+    { id: 8, name: "Meydan Lagoon District", thumbnail: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80", startPrice: "AED 1.4M", location: "Meydan", sqm: 93, tags: ["off-plan", "lagoon"], roi: 7.9, completion_date: "Q3 2027", payment_plan: "1% monthly", historical_prices: [{date:"2024-01",pricePerSqft:1260},{date:"2024-11",pricePerSqft:1340},{date:"2025-10",pricePerSqft:1460},{date:"2026-03",pricePerSqft:1550}], latest_transaction: "AED 1.62M on 26 Mar 2026 via DXB Interact" },
+    { id: 9, name: "Emaar Beachfront Aura", thumbnail: "https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=900&q=80", startPrice: "AED 3.2M", location: "Emaar Beachfront", sqm: 134, tags: ["beachfront", "ready", "luxury"], roi: 6.9, completion_date: "Ready", payment_plan: "30/70", historical_prices: [{date:"2024-01",pricePerSqft:2250},{date:"2024-10",pricePerSqft:2410},{date:"2025-09",pricePerSqft:2570},{date:"2026-03",pricePerSqft:2740}], latest_transaction: "AED 3.65M on 01 Apr 2026 via DXB Interact" },
+    { id: 10, name: "Sobha Hartland Crest", thumbnail: "https://images.unsplash.com/photo-1613545325268-9265e1609167?auto=format&fit=crop&w=900&q=80", startPrice: "AED 1.7M", location: "Sobha Hartland", sqm: 97, tags: ["branded", "off-plan"], roi: 7.6, completion_date: "Q2 2027", payment_plan: "50/50", historical_prices: [{date:"2024-02",pricePerSqft:1480},{date:"2024-10",pricePerSqft:1550},{date:"2025-08",pricePerSqft:1630},{date:"2026-03",pricePerSqft:1720}], latest_transaction: "AED 1.99M on 30 Mar 2026 via DXB Interact" },
+    { id: 11, name: "Downtown Opera Views", thumbnail: "https://images.unsplash.com/photo-1615571022219-eb45cf7faa9d?auto=format&fit=crop&w=900&q=80", startPrice: "AED 3.8M", location: "Downtown Dubai", sqm: 126, tags: ["ready", "prime"], roi: 6.1, completion_date: "Ready", payment_plan: "Cash / mortgage", historical_prices: [{date:"2024-01",pricePerSqft:2430},{date:"2024-11",pricePerSqft:2520},{date:"2025-10",pricePerSqft:2660},{date:"2026-03",pricePerSqft:2810}], latest_transaction: "AED 4.2M on 02 Apr 2026 via DXB Interact" },
+    { id: 12, name: "Arjan Bloom Heights", thumbnail: "https://images.unsplash.com/photo-1600607687644-c7f34b5b7f3f?auto=format&fit=crop&w=900&q=80", startPrice: "AED 760K", location: "Arjan", sqm: 64, tags: ["affordable", "off-plan"], roi: 9.3, completion_date: "Q1 2027", payment_plan: "65/35", historical_prices: [{date:"2024-01",pricePerSqft:840},{date:"2024-09",pricePerSqft:910},{date:"2025-07",pricePerSqft:980},{date:"2026-03",pricePerSqft:1040}], latest_transaction: "AED 905K on 25 Mar 2026 via DXB Interact" },
+    { id: 13, name: "Dubai South Horizon", thumbnail: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=900&q=80", startPrice: "AED 980K", location: "Dubai South", sqm: 74, tags: ["off-plan", "investor"], roi: 8.8, completion_date: "Q4 2027", payment_plan: "1% monthly", historical_prices: [{date:"2024-01",pricePerSqft:880},{date:"2024-10",pricePerSqft:950},{date:"2025-08",pricePerSqft:1020},{date:"2026-03",pricePerSqft:1100}], latest_transaction: "AED 1.14M on 24 Mar 2026 via DXB Interact" },
+    { id: 14, name: "Al Furjan Azure", thumbnail: "https://images.unsplash.com/photo-1600573472592-401b489a3cdc?auto=format&fit=crop&w=900&q=80", startPrice: "AED 1.1M", location: "Al Furjan", sqm: 79, tags: ["ready", "family"], roi: 8.4, completion_date: "Ready", payment_plan: "Mortgage eligible", historical_prices: [{date:"2024-02",pricePerSqft:980},{date:"2024-12",pricePerSqft:1035},{date:"2025-09",pricePerSqft:1120},{date:"2026-03",pricePerSqft:1190}], latest_transaction: "AED 1.3M on 27 Mar 2026 via DXB Interact" },
+    { id: 15, name: "The Valley Greenline", thumbnail: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=900&q=80", startPrice: "AED 2.6M", location: "The Valley", sqm: 189, tags: ["villa", "off-plan", "family"], roi: 7.1, completion_date: "Q2 2028", payment_plan: "80/20", historical_prices: [{date:"2024-01",pricePerSqft:1180},{date:"2024-10",pricePerSqft:1260},{date:"2025-10",pricePerSqft:1370},{date:"2026-03",pricePerSqft:1460}], latest_transaction: "AED 2.95M on 29 Mar 2026 via DXB Interact" },
+    { id: 16, name: "Bluewaters Private Collection", thumbnail: "https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?auto=format&fit=crop&w=900&q=80", startPrice: "AED 5.5M", location: "Bluewaters", sqm: 182, tags: ["luxury", "ready", "beachfront"], roi: 5.9, completion_date: "Ready", payment_plan: "Cash / mortgage", historical_prices: [{date:"2024-02",pricePerSqft:3010},{date:"2024-11",pricePerSqft:3200},{date:"2025-09",pricePerSqft:3380},{date:"2026-03",pricePerSqft:3570}], latest_transaction: "AED 6.1M on 01 Apr 2026 via DXB Interact" },
+    { id: 17, name: "Dubai Creek Golf Greens", thumbnail: "https://images.unsplash.com/photo-1613977257593-4875fcd7f5b2?auto=format&fit=crop&w=900&q=80", startPrice: "AED 1.65M", location: "Dubai Creek", sqm: 95, tags: ["green", "off-plan"], roi: 7.7, completion_date: "Q3 2027", payment_plan: "70/30", historical_prices: [{date:"2024-03",pricePerSqft:1410},{date:"2024-12",pricePerSqft:1490},{date:"2025-09",pricePerSqft:1600},{date:"2026-03",pricePerSqft:1710}], latest_transaction: "AED 1.92M on 26 Mar 2026 via DXB Interact" },
+    { id: 18, name: "City Walk Horizon Lofts", thumbnail: "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=900&q=80", startPrice: "AED 2.9M", location: "City Walk", sqm: 114, tags: ["branded", "ready"], roi: 6.7, completion_date: "Ready", payment_plan: "Mortgage / cash", historical_prices: [{date:"2024-02",pricePerSqft:2120},{date:"2024-11",pricePerSqft:2230},{date:"2025-09",pricePerSqft:2350},{date:"2026-03",pricePerSqft:2480}], latest_transaction: "AED 3.25M on 30 Mar 2026 via DXB Interact" },
+    { id: 19, name: "Tilal Al Ghaf Serenity", thumbnail: "https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?auto=format&fit=crop&w=900&q=80", startPrice: "AED 3.4M", location: "Tilal Al Ghaf", sqm: 201, tags: ["villa", "lagoon", "off-plan"], roi: 6.8, completion_date: "Q1 2028", payment_plan: "60/40", historical_prices: [{date:"2024-01",pricePerSqft:1540},{date:"2024-10",pricePerSqft:1640},{date:"2025-09",pricePerSqft:1730},{date:"2026-03",pricePerSqft:1850}], latest_transaction: "AED 3.86M on 31 Mar 2026 via DXB Interact" },
+    { id: 20, name: "JLT Crystal Towers", thumbnail: "https://images.unsplash.com/photo-1464890100898-a385f744067f?auto=format&fit=crop&w=900&q=80", startPrice: "AED 1.35M", location: "JLT", sqm: 88, tags: ["ready", "investor"], roi: 8.6, completion_date: "Ready", payment_plan: "Mortgage eligible", historical_prices: [{date:"2024-01",pricePerSqft:1220},{date:"2024-09",pricePerSqft:1300},{date:"2025-08",pricePerSqft:1380},{date:"2026-03",pricePerSqft:1460}], latest_transaction: "AED 1.58M on 28 Mar 2026 via DXB Interact" }
+  ];
+
+  const brandedResidences = [
+    { name: 'Pagani Tower', desc: 'Ultra-rare waterfront branded sky residences.', logo: '🖤' },
+    { name: 'Mercedes-Benz Places', desc: 'Automotive luxury meets downtown architecture.', logo: '⭐' },
+    { name: 'Bugatti Residences', desc: 'Riviera-inspired villas in the sky.', logo: '💎' },
+    { name: 'Cavalli Casa', desc: 'Runway glam with marina views.', logo: '🐆' },
+    { name: 'Missoni Bayside', desc: 'Iconic design language and curated interiors.', logo: '🎨' },
+    { name: 'Bvlgari Lighthouse', desc: 'Private island-inspired Mediterranean elegance.', logo: '🌊' },
+    { name: 'Armani Beachfront', desc: 'Monochrome sophistication on Palm fringe.', logo: '🕶️' },
+    { name: 'Elie Saab Quays', desc: 'Haute couture details with yacht berths.', logo: '✨' }
+  ];
+
+  const newsCategories = ['Real Estate', 'Tech & AI', 'Bloomberg', 'Zawya', 'Dubai Business'];
+
+  let feed = [...properties];
+  let activeChart = null;
+
+  const state = {
+    interactions: Number(localStorage.getItem('dp_interactions') || '0'),
+    last3Categories: JSON.parse(localStorage.getItem('dp_last3') || '[]'),
+    alerts: JSON.parse(localStorage.getItem('dp_alerts') || '[]'),
+    vibe: localStorage.getItem('dp_vibe') || 'mid',
+    priceAlerts: JSON.parse(localStorage.getItem('dp_price_alerts') || '[]')
+  };
+
+  const ui = {
+    interactionCount: document.getElementById('interactionCount'),
+    propertyGrid: document.getElementById('propertyGrid'),
+    profileBtn: document.getElementById('profileBtn'),
+    profileMenu: document.getElementById('profileMenu'),
+    chatInput: document.getElementById('chatInput'),
+    sendBtn: document.getElementById('sendBtn'),
+    chatReplies: document.getElementById('chatReplies'),
+    toast: document.getElementById('toast'),
+    modal: document.getElementById('propertyModal'),
+    modalCard: document.getElementById('modalCard'),
+    alertsPanel: document.getElementById('alertsPanel'),
+    brandedCarousel: document.getElementById('brandedCarousel'),
+    appBody: document.getElementById('appBody'),
+    refreshBtn: document.getElementById('refreshBtn'),
+    refreshModal: document.getElementById('refreshModal'),
+    closeRefreshModal: document.getElementById('closeRefreshModal'),
+    submitSnapshot: document.getElementById('submitSnapshot'),
+    snapshotInput: document.getElementById('snapshotInput')
+  };
+
+  function showToast(msg, color = 'bg-emerald-600') {
+    ui.toast.textContent = msg;
+    ui.toast.className = `fixed top-20 right-4 z-[60] px-4 py-3 rounded-xl text-white shadow-luxe ${color}`;
+    ui.toast.classList.remove('hidden');
+    clearTimeout(showToast.t);
+    showToast.t = setTimeout(() => ui.toast.classList.add('hidden'), 2400);
+  }
+
+  function incrementInteraction(reason = '') {
+    state.interactions += 1;
+    localStorage.setItem('dp_interactions', state.interactions);
+    ui.interactionCount.textContent = state.interactions;
+    if (reason) addCategorySignal(reason);
+  }
+
+  function addCategorySignal(signal) {
+    if (!signal) return;
+    const token = signal.toLowerCase();
+    state.last3Categories = [token, ...state.last3Categories.filter(v => v !== token)].slice(0, 3);
+    localStorage.setItem('dp_last3', JSON.stringify(state.last3Categories));
+    rankFeed();
+  }
+
+  function parseAed(value) {
+    const n = value.replace(/[^\d\.]/g, '');
+    const unit = value.toLowerCase().includes('m') ? 1_000_000 : value.toLowerCase().includes('k') ? 1_000 : 1;
+    return Number(n) * unit;
+  }
+
+  function cardScore(p) {
+    let score = 0;
+    state.last3Categories.forEach((s, idx) => {
+      const w = 3 - idx;
+      if (p.tags.join(' ').toLowerCase().includes(s)) score += 3 * w;
+      if (p.location.toLowerCase().includes(s)) score += 2 * w;
+      if (p.name.toLowerCase().includes(s)) score += 1 * w;
+    });
+    state.alerts.forEach(a => {
+      if (p.tags.join(' ').toLowerCase().includes(a.toLowerCase())) score += 3;
+    });
+    return score + (Math.random() * 0.4);
+  }
+
+  function rankFeed() {
+    feed.sort((a, b) => cardScore(b) - cardScore(a));
+    renderGrid();
+  }
+
+  function applyVibe(vibe) {
+    document.documentElement.classList.remove('dark');
+    ui.appBody.classList.remove('mid-theme');
+    if (vibe === 'dark') document.documentElement.classList.add('dark');
+    if (vibe === 'mid') ui.appBody.classList.add('mid-theme');
+    state.vibe = vibe;
+    localStorage.setItem('dp_vibe', vibe);
+  }
+
+  function renderBranded() {
+    ui.brandedCarousel.innerHTML = brandedResidences.map(item => `
+      <article class="snap-start min-w-[240px] rounded-2xl p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="text-2xl" aria-hidden="true">${item.logo}</div>
+        <h3 class="font-bold mt-2">${item.name}</h3>
+        <p class="text-xs mt-1 text-slate-500 dark:text-slate-400">${item.desc}</p>
+      </article>
+    `).join('');
+  }
+
+  function renderAlerts() {
+    ui.alertsPanel.innerHTML = newsCategories.map(cat => {
+      const active = state.alerts.includes(cat);
+      return `
+      <button data-alert="${cat}" aria-pressed="${active}" class="alert-pill px-3 py-2 rounded-full text-xs font-semibold border ${active ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-slate-50 dark:bg-slate-800 border-slate-300 dark:border-slate-700'}">${cat} ${active ? '• Set' : ''}</button>`;
+    }).join('');
+  }
+
+  function pickShapeClass(i) {
+    const shapes = ['h-[220px]','h-[280px]','h-[340px]','h-[250px]','h-[300px]'];
+    return shapes[i % shapes.length];
+  }
+
+  function renderGrid() {
+    ui.propertyGrid.innerHTML = feed.map((p, i) => `
+      <article tabindex="0" role="button" aria-label="Open details for ${p.name}" data-id="${p.id}" class="property-card masonry-item bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-luxe focus-visible:ring-2 focus-visible:ring-indigo-400">
+        <div class="relative ${pickShapeClass(i)}">
+          <img src="${p.thumbnail}" alt="${p.name} thumbnail" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+          <div class="absolute inset-x-2 top-2 flex justify-between items-center">
+            <span class="text-[10px] px-2 py-1 rounded-full bg-black/60 text-white">ROI ${p.roi}%</span>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-white/85 text-slate-800">${p.location}</span>
+          </div>
+        </div>
+        <div class="p-3">
+          <h3 class="font-bold text-base">${p.name}</h3>
+          <p class="text-sm text-indigo-600 dark:text-indigo-300 font-semibold">from ${p.startPrice}</p>
+          <div class="mt-2 flex gap-2 flex-wrap">
+            ${p.tags.slice(0,2).map(t => `<span class="text-[11px] px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800">${t}</span>`).join('')}
+          </div>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  function similarSuggestions(base) {
+    const budget = parseAed(base.startPrice);
+    return properties
+      .filter(p => p.id !== base.id)
+      .map(p => {
+        const pBudget = parseAed(p.startPrice);
+        const budgetCloseness = Math.abs(pBudget - budget);
+        const overlap = p.tags.filter(t => base.tags.includes(t)).length;
+        return { p, score: overlap * 4 - budgetCloseness / 350000 };
+      })
+      .sort((a,b) => b.score - a.score)
+      .slice(0,3)
+      .map(item => item.p);
+  }
+
+  function openModalById(id) {
+    const p = properties.find(x => x.id === Number(id));
+    if (!p) return;
+    incrementInteraction(p.tags[0] || p.location);
+    const latest = p.historical_prices[p.historical_prices.length - 1]?.pricePerSqft || 0;
+    const readyBadge = p.completion_date.toLowerCase().includes('ready') ? 'Yes' : 'No';
+    const suggestions = similarSuggestions(p);
+
+    ui.modalCard.innerHTML = `
+      <div class="p-4 sm:p-6 space-y-4">
+        <div class="relative rounded-2xl overflow-hidden h-64 sm:h-80">
+          <img src="${p.thumbnail}" alt="${p.name} hero image" class="w-full h-full object-cover" />
+          <button id="closePropertyModal" class="absolute top-3 right-3 px-3 py-1.5 rounded-full bg-black/55 text-white">Close</button>
+          <div class="absolute bottom-3 left-3 px-3 py-2 rounded-xl bg-black/50 text-white">
+            <h3 class="text-xl sm:text-2xl font-black">${p.name}</h3>
+            <p class="text-xs">${p.location} • ${p.sqm} sqm</p>
+          </div>
+        </div>
+
+        <button id="toggleChart" class="text-left w-full rounded-2xl border border-slate-200 dark:border-slate-700 p-4 hover:bg-slate-50 dark:hover:bg-slate-800" aria-expanded="false">
+          <p class="text-xs uppercase text-slate-500">Current price / sqft (click to visualize trend)</p>
+          <p class="text-3xl font-black text-indigo-600 dark:text-indigo-300">AED ${latest.toLocaleString()}</p>
+        </button>
+        <div id="chartWrap" class="hidden rounded-2xl p-3 bg-white/70 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-700">
+          <canvas id="priceChart" height="120" aria-label="Historical price chart"></canvas>
+        </div>
+
+        <section class="rounded-2xl border border-slate-200 dark:border-slate-700 p-4">
+          <h4 class="font-bold mb-2">Payment Plan Timeline</h4>
+          <ul class="list-disc ml-6 text-sm space-y-1" id="paymentList">
+            <li draggable="true" class="drag-item cursor-grab active:cursor-grabbing">Booking: ${p.payment_plan.split(' ')[0]} immediate</li>
+            <li draggable="true" class="drag-item cursor-grab active:cursor-grabbing">Construction milestone payments</li>
+            <li draggable="true" class="drag-item cursor-grab active:cursor-grabbing">Handover based balance</li>
+          </ul>
+          <button draggable="true" class="drag-item mt-3 px-3 py-2 rounded-xl bg-indigo-600 text-white text-sm">Drag for full payment breakdown</button>
+        </section>
+
+        <div class="grid sm:grid-cols-3 gap-3 text-sm">
+          <div class="rounded-2xl p-3 bg-slate-100 dark:bg-slate-800"><p class="text-slate-500">Completion</p><p class="font-bold">${p.completion_date}</p></div>
+          <div class="rounded-2xl p-3 bg-slate-100 dark:bg-slate-800"><p class="text-slate-500">Ready Community?</p><p class="font-bold">${readyBadge}</p></div>
+          <div class="rounded-2xl p-3 bg-slate-100 dark:bg-slate-800"><p class="text-slate-500">Estimated ROI</p><p class="font-bold">${p.roi}% (based on rental momentum + historic demand)</p></div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 dark:border-slate-700 p-4">
+          <p class="font-semibold">Latest Transaction</p>
+          <p class="text-sm text-slate-600 dark:text-slate-300">${p.latest_transaction}</p>
+          <a href="https://dxbinteract.com" target="_blank" rel="noopener noreferrer" class="inline-block mt-3 px-4 py-2 rounded-xl bg-slate-900 text-white dark:bg-indigo-600">View full DXB Interact report</a>
+        </div>
+
+        <section class="space-y-2">
+          <h4 class="font-bold">Similar suggestions</h4>
+          <div class="flex gap-3 overflow-x-auto pb-2">
+            ${suggestions.map(s => `<article class="min-w-[220px] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+              <img src="${s.thumbnail}" alt="${s.name}" class="w-full h-28 object-cover">
+              <div class="p-3"><p class="font-semibold text-sm">${s.name}</p><p class="text-xs text-indigo-600 dark:text-indigo-300">${s.startPrice}</p></div>
+            </article>`).join('')}
+          </div>
+        </section>
+
+        <button id="setPriceAlert" class="w-full px-4 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold">Set price alert</button>
+      </div>
+    `;
+
+    ui.modal.classList.remove('hidden');
+
+    const chartWrap = document.getElementById('chartWrap');
+    const toggleChart = document.getElementById('toggleChart');
+    toggleChart.addEventListener('click', () => {
+      const expanded = toggleChart.getAttribute('aria-expanded') === 'true';
+      toggleChart.setAttribute('aria-expanded', String(!expanded));
+      chartWrap.classList.toggle('hidden');
+      if (!expanded) {
+        const ctx = document.getElementById('priceChart');
+        if (activeChart) activeChart.destroy();
+        activeChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: p.historical_prices.map(h => h.date),
+            datasets: [{
+              label: 'AED / sqft',
+              data: p.historical_prices.map(h => h.pricePerSqft),
+              fill: true,
+              borderColor: '#6366F1',
+              backgroundColor: 'rgba(99, 102, 241, 0.15)',
+              tension: 0.32,
+              pointRadius: 3
+            }]
+          },
+          options: {
+            plugins: { legend: { display: false } },
+            scales: { y: { grid: { color: 'rgba(148,163,184,0.25)' } }, x: { grid: { display: false } } }
+          }
+        });
+      }
+    });
+
+    document.getElementById('closePropertyModal').addEventListener('click', closeModal);
+    document.getElementById('setPriceAlert').addEventListener('click', () => {
+      if (!state.priceAlerts.includes(p.id)) {
+        state.priceAlerts.push(p.id);
+        localStorage.setItem('dp_price_alerts', JSON.stringify(state.priceAlerts));
+      }
+      showToast('Alert set — AI will notify you of drops');
+    });
+
+    setupDragPopover(p);
+  }
+
+  function setupDragPopover(p) {
+    let ghost = null;
+    const items = ui.modalCard.querySelectorAll('.drag-item');
+
+    const createGhost = (text, x, y) => {
+      ghost = document.createElement('div');
+      ghost.className = 'drag-ghost';
+      ghost.textContent = text;
+      ghost.style.left = `${x + 8}px`;
+      ghost.style.top = `${y + 8}px`;
+      document.body.appendChild(ghost);
+    };
+
+    const moveGhost = (x, y) => {
+      if (!ghost) return;
+      ghost.style.left = `${x + 8}px`;
+      ghost.style.top = `${y + 8}px`;
+    };
+
+    const dropGhost = (x, y) => {
+      if (!ghost) return;
+      const modalRect = ui.modalCard.getBoundingClientRect();
+      const outside = x < modalRect.left || x > modalRect.right || y < modalRect.top || y > modalRect.bottom;
+      if (outside) {
+        showToast(`Payment breakdown: ${p.payment_plan}. Latest milestone optimized by AI.`, 'bg-indigo-600');
+      }
+      ghost.remove();
+      ghost = null;
+    };
+
+    items.forEach(el => {
+      el.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', el.textContent.trim());
+      });
+      el.addEventListener('pointerdown', (e) => {
+        createGhost(el.textContent.trim(), e.clientX, e.clientY);
+        const onMove = ev => moveGhost(ev.clientX, ev.clientY);
+        const onUp = ev => {
+          dropGhost(ev.clientX, ev.clientY);
+          window.removeEventListener('pointermove', onMove);
+          window.removeEventListener('pointerup', onUp);
+        };
+        window.addEventListener('pointermove', onMove);
+        window.addEventListener('pointerup', onUp);
+      });
+    });
+  }
+
+  function closeModal() {
+    ui.modal.classList.add('hidden');
+  }
+
+  function sendChat() {
+    const q = ui.chatInput.value.trim();
+    if (!q) return;
+    incrementInteraction(q.split(' ')[0]);
+    ui.chatInput.value = '';
+    const match = properties.find(p => q.toLowerCase().split(/\W+/).some(w => p.location.toLowerCase().includes(w) || p.tags.join(' ').toLowerCase().includes(w)));
+    const text = match
+      ? `AI: Based on your interest in “${q}”, I boosted ${match.location} and similar ${match.tags[0]} options with ROI up to ${match.roi}%.`
+      : `AI: I learned your query “${q}” and adjusted your feed toward matching budget, tags, and community signals.`;
+    ui.chatReplies.insertAdjacentHTML('afterbegin', `
+      <article class="rounded-2xl p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm animate-floatIn">
+        <p class="text-sm">${text}</p>
+      </article>
+    `);
+    addCategorySignal(q);
+  }
+
+  function refreshFromSnapshot() {
+    const raw = ui.snapshotInput.value.trim();
+    if (!raw) {
+      showToast('Paste snapshot text first', 'bg-amber-600');
+      return;
+    }
+    const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+    lines.forEach(line => {
+      const [locationPart, pricePart, roiPart] = line.split('|').map(s => s?.trim());
+      if (!locationPart) return;
+      const target = properties.find(p => p.location.toLowerCase().includes(locationPart.toLowerCase()) || p.name.toLowerCase().includes(locationPart.toLowerCase()));
+      if (!target) return;
+      if (pricePart && /aed/i.test(pricePart)) target.startPrice = pricePart.replace(/from\s*/i, '');
+      if (roiPart) {
+        const n = parseFloat(roiPart.replace(/[^\d.]/g, ''));
+        if (!Number.isNaN(n)) target.roi = n;
+      }
+      target.latest_transaction = `Updated via user snapshot on 02 Apr 2026: ${line}`;
+    });
+    feed = [...properties];
+    rankFeed();
+    ui.refreshModal.classList.add('hidden');
+    ui.snapshotInput.value = '';
+    showToast('Grid updated — AI learned new market data');
+  }
+
+  // -----------------------
+  // Event wiring + accessibility hooks
+  // -----------------------
+  ui.profileBtn.addEventListener('click', () => {
+    const hidden = ui.profileMenu.classList.toggle('hidden');
+    ui.profileBtn.setAttribute('aria-expanded', String(!hidden));
+  });
+
+  document.querySelectorAll('.vibe-btn').forEach(btn => btn.addEventListener('click', () => {
+    applyVibe(btn.dataset.vibe);
+    ui.profileMenu.classList.add('hidden');
+  }));
+
+  document.addEventListener('click', (e) => {
+    if (!ui.profileBtn.contains(e.target) && !ui.profileMenu.contains(e.target)) {
+      ui.profileMenu.classList.add('hidden');
+      ui.profileBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  ui.propertyGrid.addEventListener('click', (e) => {
+    const card = e.target.closest('.property-card');
+    if (card) openModalById(card.dataset.id);
+  });
+
+  ui.propertyGrid.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      const card = e.target.closest('.property-card');
+      if (card) {
+        e.preventDefault();
+        openModalById(card.dataset.id);
+      }
+    }
+  });
+
+  ui.modal.addEventListener('click', (e) => { if (e.target === ui.modal) closeModal(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeModal();
+      ui.refreshModal.classList.add('hidden');
+    }
+  });
+
+  ui.sendBtn.addEventListener('click', sendChat);
+  ui.chatInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') sendChat();
+  });
+
+  ui.alertsPanel.addEventListener('click', (e) => {
+    const btn = e.target.closest('.alert-pill');
+    if (!btn) return;
+    const cat = btn.dataset.alert;
+    const has = state.alerts.includes(cat);
+    state.alerts = has ? state.alerts.filter(a => a !== cat) : [...state.alerts, cat];
+    localStorage.setItem('dp_alerts', JSON.stringify(state.alerts));
+    addCategorySignal(cat);
+    renderAlerts();
+    showToast(`${cat} alert ${has ? 'removed' : 'set'} — AI reprioritized feed`, has ? 'bg-slate-700' : 'bg-indigo-600');
+  });
+
+  document.getElementById('toggleAlerts').addEventListener('click', () => {
+    ui.alertsPanel.classList.toggle('hidden');
+  });
+
+  ui.refreshBtn.addEventListener('click', () => ui.refreshModal.classList.remove('hidden'));
+  ui.closeRefreshModal.addEventListener('click', () => ui.refreshModal.classList.add('hidden'));
+  ui.submitSnapshot.addEventListener('click', refreshFromSnapshot);
+  ui.refreshModal.addEventListener('click', (e) => { if (e.target === ui.refreshModal) ui.refreshModal.classList.add('hidden'); });
+
+  // -----------------------
+  // Boot app
+  // -----------------------
+  applyVibe(state.vibe);
+  ui.interactionCount.textContent = state.interactions;
+  renderAlerts();
+  renderBranded();
+  rankFeed();
+})();
+</script>
+</body>
+</html>
