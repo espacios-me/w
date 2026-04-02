@@ -1,0 +1,62 @@
+# Git
+.git
+.gitignore
+
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Manus
+.manus-logs/
+
+# OS
+Thumbs.db
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary
+tmp/
+temp/
+*.tmp
+
+# Cloudflare
+.wrangler/
+wrangler.toml
+
+# Documentation
+BOTSPACE_DASHBOARD_BLUEPRINT.txt
+BOTSPACE_FULLSTACK_CODE.txt
+DEPLOYMENT_PLAN_GIT_TO_CLOUDFLARE.txt
+DEPLOYMENT_SETUP_SUMMARY.txt
+
+# Other
+worker.js
+patches/
+agents/

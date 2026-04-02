@@ -1,0 +1,350 @@
+{
+  "endpoint": "https://app.guild-realestate.com/backend/api/webhook/lead-import-webhook",
+  "headers": {
+    "x-api-key": "YOUR_EXTERNAL_LEAD_IMPORT_API_KEY",
+    "Content-Type": "application/json"
+  },
+  "notes": {
+    "phone_format": "Use E.164 format with a leading +",
+    "formCountryCode": "Use country code like AE, not dialing code",
+    "unknown_agents": [
+      {
+        "user_id": 21,
+        "name": null,
+        "note": "Agent name not found in the current export"
+      }
+    ]
+  },
+  "agents": {
+    "8": {
+      "name": "Liz Gapunuan",
+      "payload": {
+        "name": "{name}",
+        "phone": "+{countryCode}{phone}",
+        "source": "BotSpace",
+        "campaign": "All_Message_Trigger",
+        "form_name": "BotSpace All Messages",
+        "user_id": 8,
+        "medium": "WhatsApp",
+        "budget": "{budget}",
+        "utm_source": "botspace",
+        "utm_medium": "api",
+        "utm_campaign": "All_Message_Trigger",
+        "utm_content": "{message.direction}-{message.id}",
+        "message": "WhatsApp message | Direction: {message.direction} | Type: {message.type} | Message ID: {message.id} | Content: {message.content} | Project: {contact.project} | Developer: {contact.developer} | BHK: {contact.bhk} | Class: {contact.class} | BK: {contact.bk} | Owner: {contact.owner}",
+        "score_meta": {
+          "message_direction": "{message.direction}",
+          "message_type": "{message.type}",
+          "message_id": "{message.id}",
+          "optout_status": "{contact.optout}",
+          "response_rate": "{contact.response_rate}"
+        },
+        "social_media_meta": {
+          "platform": "whatsapp",
+          "channel": "BotSpace"
+        },
+        "formCountryCode": "AE"
+      }
+    },
+    "15": {
+      "name": "Umar Mirza",
+      "payload": {
+        "name": "{name}",
+        "phone": "+{countryCode}{phone}",
+        "source": "BotSpace",
+        "campaign": "All_Message_Trigger",
+        "form_name": "BotSpace All Messages",
+        "user_id": 15,
+        "medium": "WhatsApp",
+        "budget": "{budget}",
+        "utm_source": "botspace",
+        "utm_medium": "api",
+        "utm_campaign": "All_Message_Trigger",
+        "utm_content": "{message.direction}-{message.id}",
+        "message": "WhatsApp message | Direction: {message.direction} | Type: {message.type} | Message ID: {message.id} | Content: {message.content} | Project: {contact.project} | Developer: {contact.developer} | BHK: {contact.bhk} | Class: {contact.class} | BK: {contact.bk} | Owner: {contact.owner}",
+        "score_meta": {
+          "message_direction": "{message.direction}",
+          "message_type": "{message.type}",
+          "message_id": "{message.id}",
+          "optout_status": "{contact.optout}",
+          "response_rate": "{contact.response_rate}"
+        },
+        "social_media_meta": {
+          "platform": "whatsapp",
+          "channel": "BotSpace"
+        },
+        "formCountryCode": "AE"
+      }
+    },
+    "20": {
+      "name": "Michael Keogh",
+      "payload": {
+        "name": "{name}",
+        "phone": "+{countryCode}{phone}",
+        "source": "BotSpace",
+        "campaign": "All_Message_Trigger",
+        "form_name": "BotSpace All Messages",
+        "user_id": 20,
+        "medium": "WhatsApp",
+        "budget": "{budget}",
+        "utm_source": "botspace",
+        "utm_medium": "api",
+        "utm_campaign": "All_Message_Trigger",
+        "utm_content": "{message.direction}-{message.id}",
+        "message": "WhatsApp message | Direction: {message.direction} | Type: {message.type} | Message ID: {message.id} | Content: {message.content} | Project: {contact.project} | Developer: {contact.developer} | BHK: {contact.bhk} | Class: {contact.class} | BK: {contact.bk} | Owner: {contact.owner}",
+        "score_meta": {
+          "message_direction": "{message.direction}",
+          "message_type": "{message.type}",
+          "message_id": "{message.id}",
+          "optout_status": "{contact.optout}",
+          "response_rate": "{contact.response_rate}"
+        },
+        "social_media_meta": {
+          "platform": "whatsapp",
+          "channel": "BotSpace"
+        },
+        "formCountryCode": "AE"
+      }
+    },
+    "21": {
+      "name": null,
+      "payload": {
+        "name": "{name}",
+        "phone": "+{countryCode}{phone}",
+        "source": "BotSpace",
+        "campaign": "All_Message_Trigger",
+        "form_name": "BotSpace All Messages",
+        "user_id": 21,
+        "medium": "WhatsApp",
+        "budget": "{budget}",
+        "utm_source": "botspace",
+        "utm_medium": "api",
+        "utm_campaign": "All_Message_Trigger",
+        "utm_content": "{message.direction}-{message.id}",
+        "message": "WhatsApp message | Direction: {message.direction} | Type: {message.type} | Message ID: {message.id} | Content: {message.content} | Project: {contact.project} | Developer: {contact.developer} | BHK: {contact.bhk} | Class: {contact.class} | BK: {contact.bk} | Owner: {contact.owner}",
+        "score_meta": {
+          "message_direction": "{message.direction}",
+          "message_type": "{message.type}",
+          "message_id": "{message.id}",
+          "optout_status": "{contact.optout}",
+          "response_rate": "{contact.response_rate}"
+        },
+        "social_media_meta": {
+          "platform": "whatsapp",
+          "channel": "BotSpace"
+        },
+        "formCountryCode": "AE"
+      }
+    },
+    "23": {
+      "name": "Tang Jie",
+      "payload": {
+        "name": "{name}",
+        "phone": "+{countryCode}{phone}",
+        "source": "BotSpace",
+        "campaign": "All_Message_Trigger",
+        "form_name": "BotSpace All Messages",
+        "user_id": 23,
+        "medium": "WhatsApp",
+        "budget": "{budget}",
+        "utm_source": "botspace",
+        "utm_medium": "api",
+        "utm_campaign": "All_Message_Trigger",
+        "utm_content": "{message.direction}-{message.id}",
+        "message": "WhatsApp message | Direction: {message.direction} | Type: {message.type} | Message ID: {message.id} | Content: {message.content} | Project: {contact.project} | Developer: {contact.developer} | BHK: {contact.bhk} | Class: {contact.class} | BK: {contact.bk} | Owner: {contact.owner}",
+        "score_meta": {
+          "message_direction": "{message.direction}",
+          "message_type": "{message.type}",
+          "message_id": "{message.id}",
+          "optout_status": "{contact.optout}",
+          "response_rate": "{contact.response_rate}"
+        },
+        "social_media_meta": {
+          "platform": "whatsapp",
+          "channel": "BotSpace"
+        },
+        "formCountryCode": "AE"
+      }
+    },
+    "25": {
+      "name": "Khari King",
+      "payload": {
+        "name": "{name}",
+        "phone": "+{countryCode}{phone}",
+        "source": "BotSpace",
+        "campaign": "All_Message_Trigger",
+        "form_name": "BotSpace All Messages",
+        "user_id": 25,
+        "medium": "WhatsApp",
+        "budget": "{budget}",
+        "utm_source": "botspace",
+        "utm_medium": "api",
+        "utm_campaign": "All_Message_Trigger",
+        "utm_content": "{message.direction}-{message.id}",
+        "message": "WhatsApp message | Direction: {message.direction} | Type: {message.type} | Message ID: {message.id} | Content: {message.content} | Project: {contact.project} | Developer: {contact.developer} | BHK: {contact.bhk} | Class: {contact.class} | BK: {contact.bk} | Owner: {contact.owner}",
+        "score_meta": {
+          "message_direction": "{message.direction}",
+          "message_type": "{message.type}",
+          "message_id": "{message.id}",
+          "optout_status": "{contact.optout}",
+          "response_rate": "{contact.response_rate}"
+        },
+        "social_media_meta": {
+          "platform": "whatsapp",
+          "channel": "BotSpace"
+        },
+        "formCountryCode": "AE"
+      }
+    },
+    "29": {
+      "name": "Ahmed Dahir",
+      "payload": {
+        "name": "{name}",
+        "phone": "+{countryCode}{phone}",
+        "source": "BotSpace",
+        "campaign": "All_Message_Trigger",
+        "form_name": "BotSpace All Messages",
+        "user_id": 29,
+        "medium": "WhatsApp",
+        "budget": "{budget}",
+        "utm_source": "botspace",
+        "utm_medium": "api",
+        "utm_campaign": "All_Message_Trigger",
+        "utm_content": "{message.direction}-{message.id}",
+        "message": "WhatsApp message | Direction: {message.direction} | Type: {message.type} | Message ID: {message.id} | Content: {message.content} | Project: {contact.project} | Developer: {contact.developer} | BHK: {contact.bhk} | Class: {contact.class} | BK: {contact.bk} | Owner: {contact.owner}",
+        "score_meta": {
+          "message_direction": "{message.direction}",
+          "message_type": "{message.type}",
+          "message_id": "{message.id}",
+          "optout_status": "{contact.optout}",
+          "response_rate": "{contact.response_rate}"
+        },
+        "social_media_meta": {
+          "platform": "whatsapp",
+          "channel": "BotSpace"
+        },
+        "formCountryCode": "AE"
+      }
+    },
+    "30": {
+      "name": "Benjamin Abudiore",
+      "payload": {
+        "name": "{name}",
+        "phone": "+{countryCode}{phone}",
+        "source": "BotSpace",
+        "campaign": "All_Message_Trigger",
+        "form_name": "BotSpace All Messages",
+        "user_id": 30,
+        "medium": "WhatsApp",
+        "budget": "{budget}",
+        "utm_source": "botspace",
+        "utm_medium": "api",
+        "utm_campaign": "All_Message_Trigger",
+        "utm_content": "{message.direction}-{message.id}",
+        "message": "WhatsApp message | Direction: {message.direction} | Type: {message.type} | Message ID: {message.id} | Content: {message.content} | Project: {contact.project} | Developer: {contact.developer} | BHK: {contact.bhk} | Class: {contact.class} | BK: {contact.bk} | Owner: {contact.owner}",
+        "score_meta": {
+          "message_direction": "{message.direction}",
+          "message_type": "{message.type}",
+          "message_id": "{message.id}",
+          "optout_status": "{contact.optout}",
+          "response_rate": "{contact.response_rate}"
+        },
+        "social_media_meta": {
+          "platform": "whatsapp",
+          "channel": "BotSpace"
+        },
+        "formCountryCode": "AE"
+      }
+    },
+    "31": {
+      "name": "Dave Chaggar",
+      "payload": {
+        "name": "{name}",
+        "phone": "+{countryCode}{phone}",
+        "source": "BotSpace",
+        "campaign": "All_Message_Trigger",
+        "form_name": "BotSpace All Messages",
+        "user_id": 31,
+        "medium": "WhatsApp",
+        "budget": "{budget}",
+        "utm_source": "botspace",
+        "utm_medium": "api",
+        "utm_campaign": "All_Message_Trigger",
+        "utm_content": "{message.direction}-{message.id}",
+        "message": "WhatsApp message | Direction: {message.direction} | Type: {message.type} | Message ID: {message.id} | Content: {message.content} | Project: {contact.project} | Developer: {contact.developer} | BHK: {contact.bhk} | Class: {contact.class} | BK: {contact.bk} | Owner: {contact.owner}",
+        "score_meta": {
+          "message_direction": "{message.direction}",
+          "message_type": "{message.type}",
+          "message_id": "{message.id}",
+          "optout_status": "{contact.optout}",
+          "response_rate": "{contact.response_rate}"
+        },
+        "social_media_meta": {
+          "platform": "whatsapp",
+          "channel": "BotSpace"
+        },
+        "formCountryCode": "AE"
+      }
+    },
+    "36": {
+      "name": "Tamer Shabana",
+      "payload": {
+        "name": "{name}",
+        "phone": "+{countryCode}{phone}",
+        "source": "BotSpace",
+        "campaign": "All_Message_Trigger",
+        "form_name": "BotSpace All Messages",
+        "user_id": 36,
+        "medium": "WhatsApp",
+        "budget": "{budget}",
+        "utm_source": "botspace",
+        "utm_medium": "api",
+        "utm_campaign": "All_Message_Trigger",
+        "utm_content": "{message.direction}-{message.id}",
+        "message": "WhatsApp message | Direction: {message.direction} | Type: {message.type} | Message ID: {message.id} | Content: {message.content} | Project: {contact.project} | Developer: {contact.developer} | BHK: {contact.bhk} | Class: {contact.class} | BK: {contact.bk} | Owner: {contact.owner}",
+        "score_meta": {
+          "message_direction": "{message.direction}",
+          "message_type": "{message.type}",
+          "message_id": "{message.id}",
+          "optout_status": "{contact.optout}",
+          "response_rate": "{contact.response_rate}"
+        },
+        "social_media_meta": {
+          "platform": "whatsapp",
+          "channel": "BotSpace"
+        },
+        "formCountryCode": "AE"
+      }
+    },
+    "37": {
+      "name": "Nareen Alharbi",
+      "payload": {
+        "name": "{name}",
+        "phone": "+{countryCode}{phone}",
+        "source": "BotSpace",
+        "campaign": "All_Message_Trigger",
+        "form_name": "BotSpace All Messages",
+        "user_id": 37,
+        "medium": "WhatsApp",
+        "budget": "{budget}",
+        "utm_source": "botspace",
+        "utm_medium": "api",
+        "utm_campaign": "All_Message_Trigger",
+        "utm_content": "{message.direction}-{message.id}",
+        "message": "WhatsApp message | Direction: {message.direction} | Type: {message.type} | Message ID: {message.id} | Content: {message.content} | Project: {contact.project} | Developer: {contact.developer} | BHK: {contact.bhk} | Class: {contact.class} | BK: {contact.bk} | Owner: {contact.owner}",
+        "score_meta": {
+          "message_direction": "{message.direction}",
+          "message_type": "{message.type}",
+          "message_id": "{message.id}",
+          "optout_status": "{contact.optout}",
+          "response_rate": "{contact.response_rate}"
+        },
+        "social_media_meta": {
+          "platform": "whatsapp",
+          "channel": "BotSpace"
+        },
+        "formCountryCode": "AE"
+      }
+    }
+  }
+}

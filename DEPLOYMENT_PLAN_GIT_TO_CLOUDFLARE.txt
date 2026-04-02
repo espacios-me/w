@@ -1,0 +1,755 @@
+================================================================================
+        BOTSPACE DASHBOARD - DEPLOYMENT PLAN (GIT TO CLOUDFLARE)
+        Deploy from GitHub to Cloudflare at espacios.me/botspace
+================================================================================
+
+PROJECT: BotSpace Dashboard
+TARGET DOMAIN: espacios.me/botspace
+DEPLOYMENT PLATFORM: Cloudflare Pages / Workers
+REPOSITORY: GitHub (botspace-dashboard)
+
+================================================================================
+PHASE 1: PREPARATION & PREREQUISITES
+================================================================================
+
+1.1 GITHUB REPOSITORY SETUP
+────────────────────────────────────────────────────────────────────────────
+
+TASK 1.1.1: Create GitHub Repository
+  - Repository Name: botspace-dashboard
+  - Visibility: Private (recommended for API keys)
+  - Initialize with: README.md, .gitignore
+  - Add License: MIT
+  - Description: "BotSpace WhatsApp Analytics Dashboard with Gemini AI"
+
+TASK 1.1.2: Configure Repository Settings
+  - Enable Branch Protection on main branch
+  - Require pull request reviews before merge
+  - Require status checks to pass before merge
+  - Dismiss stale pull request approvals
+  - Require code review from code owners
+
+TASK 1.1.3: Create .gitignore File
+  - Exclude: node_modules/, dist/, .env, .env.local
+  - Exclude: .DS_Store, *.log, .vscode/
+  - Exclude: build/, coverage/, .turbo/
+
+TASK 1.1.4: Create Environment Configuration
+  - Create .env.example file with placeholder values
+  - Document all required environment variables:
+    * BOTSPACE_CHANNEL_ID
+    * BOTSPACE_API_KEY
+    * GEMINI_API_KEY
+    * VITE_ANALYTICS_ENDPOINT (optional)
+    * VITE_ANALYTICS_WEBSITE_ID (optional)
+
+TASK 1.1.5: Push Local Code to GitHub
+  - Initialize git in project directory
+  - Add all source files
+  - Create initial commit
+  - Push to main branch
+  - Verify all files appear on GitHub
+
+────────────────────────────────────────────────────────────────────────────
+
+1.2 CLOUDFLARE ACCOUNT SETUP
+────────────────────────────────────────────────────────────────────────────
+
+TASK 1.2.1: Verify Cloudflare Account
+  - Account Name: espacios.me
+  - Account ID: b1b843ec85bc39a3a4d370ba4f84f17a
+  - Verify account is active and in good standing
+  - Check billing information is current
+
+TASK 1.2.2: Verify Domain Configuration
+  - Domain: espacios.me
+  - Nameservers: Pointing to Cloudflare
+  - DNS records: Properly configured
+  - SSL/TLS: Full (Strict) mode enabled
+
+TASK 1.2.3: Create Cloudflare API Token
+  - Scope: Edit Cloudflare Workers, Pages, and DNS
+  - Permissions:
+    * Account.Workers Scripts - Edit
+    * Account.Pages - Edit
+    * Zone.DNS - Edit
+  - Save token securely (needed for GitHub Actions)
+
+TASK 1.2.4: Create GitHub Secrets
+  - CLOUDFLARE_API_TOKEN: [API token from 1.2.3]
+  - CLOUDFLARE_ACCOUNT_ID: b1b843ec85bc39a3a4d370ba4f84f17a
+  - CLOUDFLARE_ZONE_ID: [Get from Cloudflare dashboard]
+
+────────────────────────────────────────────────────────────────────────────
+
+1.3 BUILD CONFIGURATION
+────────────────────────────────────────────────────────────────────────────
+
+TASK 1.3.1: Create wrangler.toml (Cloudflare Workers Config)
+  - name: "botspace-dashboard"
+  - main: "dist/index.js"
+  - type: "javascript"
+  - account_id: "b1b843ec85bc39a3a4d370ba4f84f17a"
+  - workers_dev: false
+  - route: "espacios.me/botspace*"
+  - zone_id: [Get from Cloudflare]
+
+TASK 1.3.2: Create vite.config.ts
+  - Build output: dist/public
+  - Base path: /botspace/
+  - Minify: true
+  - Source maps: false (production)
+  - Environment variables: Inject VITE_* prefixed vars
+
+TASK 1.3.3: Update package.json Scripts
+  - build: "vite build && esbuild server/index.ts --platform=node --bundle"
+  - deploy: "wrangler deploy"
+  - deploy:pages: "wrangler pages deploy dist/public"
+
+TASK 1.3.4: Create build.sh Script
+  - Install dependencies: pnpm install
+  - Run type check: pnpm check
+  - Build project: pnpm build
+  - Verify dist/ directory created
+  - Output: Ready for deployment
+
+================================================================================
+PHASE 2: GITHUB ACTIONS CI/CD PIPELINE
+================================================================================
+
+2.1 CREATE GITHUB ACTIONS WORKFLOW
+────────────────────────────────────────────────────────────────────────────
+
+TASK 2.1.1: Create .github/workflows/deploy.yml
+  - Trigger: On push to main branch
+  - Trigger: Manual workflow dispatch
+  - Jobs: build, test, deploy
+
+TASK 2.1.2: Build Job Configuration
+  - Runner: ubuntu-latest
+  - Node version: 18.x
+  - Steps:
+    1. Checkout code
+    2. Setup Node.js
+    3. Install pnpm
+    4. Install dependencies: pnpm install
+    5. Run type check: pnpm check
+    6. Build project: pnpm build
+    7. Upload dist/ as artifact
+
+TASK 2.1.3: Test Job Configuration
+  - Runs after: build job
+  - Steps:
+    1. Download build artifact
+    2. Verify dist/public exists
+    3. Verify dist/index.js exists
+    4. Check file sizes are reasonable
+    5. Validate HTML/CSS/JS syntax
+
+TASK 2.1.4: Deploy Job Configuration
+  - Runs after: test job (only on success)
+  - Environment: production
+  - Secrets:
+    * CLOUDFLARE_API_TOKEN
+    * CLOUDFLARE_ACCOUNT_ID
+  - Steps:
+    1. Download build artifact
+    2. Install Wrangler CLI
+    3. Deploy to Cloudflare Workers
+    4. Verify deployment successful
+    5. Run smoke tests on deployed URL
+
+TASK 2.1.5: Add Environment Variables to Workflow
+  - BOTSPACE_CHANNEL_ID: [from GitHub Secrets]
+  - BOTSPACE_API_KEY: [from GitHub Secrets]
+  - GEMINI_API_KEY: [from GitHub Secrets]
+  - VITE_ANALYTICS_ENDPOINT: [optional]
+  - VITE_ANALYTICS_WEBSITE_ID: [optional]
+
+────────────────────────────────────────────────────────────────────────────
+
+2.2 GITHUB SECRETS MANAGEMENT
+────────────────────────────────────────────────────────────────────────────
+
+TASK 2.2.1: Add Repository Secrets
+  - CLOUDFLARE_API_TOKEN: [Cloudflare API token]
+  - CLOUDFLARE_ACCOUNT_ID: b1b843ec85bc39a3a4d370ba4f84f17a
+  - BOTSPACE_API_KEY: botspace_5ed2f2b9-d7e2-444f-9dee-3411273c5848
+  - BOTSPACE_CHANNEL_ID: 690c66ec2a221421bdc2b6d1
+  - GEMINI_API_KEY: AIzaSyBDW85y2XgKnmeGJ2DSEX5qZZbQPW_Pri0
+
+TASK 2.2.2: Create Environment-Specific Secrets
+  - Production environment: Create production environment
+  - Add approval requirements for production deployments
+  - Add deployment protection rules
+
+TASK 2.2.3: Document Secret Rotation Policy
+  - Review secrets quarterly
+  - Rotate API keys annually
+  - Update GitHub Secrets after rotation
+  - Test deployment after key rotation
+
+================================================================================
+PHASE 3: CLOUDFLARE WORKERS CONFIGURATION
+================================================================================
+
+3.1 WORKERS SETUP
+────────────────────────────────────────────────────────────────────────────
+
+TASK 3.1.1: Create Cloudflare Worker
+  - Name: botspace-dashboard
+  - Type: JavaScript
+  - Environment: Production
+  - Memory: 128MB (default)
+  - CPU: Standard
+
+TASK 3.1.2: Configure Worker Routes
+  - Route: espacios.me/botspace
+  - Route: espacios.me/botspace/*
+  - Zone: espacios.me
+  - Priority: 100
+
+TASK 3.1.3: Set Worker Environment Variables
+  - BOTSPACE_CHANNEL_ID: 690c66ec2a221421bdc2b6d1
+  - BOTSPACE_API_KEY: botspace_5ed2f2b9-d7e2-444f-9dee-3411273c5848
+  - GEMINI_API_KEY: AIzaSyBDW85y2XgKnmeGJ2DSEX5qZZbQPW_Pri0
+  - NODE_ENV: production
+
+TASK 3.1.4: Configure Worker Bindings
+  - KV Namespace: botspace-cache (optional, for caching)
+  - R2 Bucket: botspace-assets (optional, for static files)
+  - D1 Database: botspace-db (optional, for analytics)
+
+TASK 3.1.5: Set Worker Triggers
+  - HTTP: Enable HTTP routing
+  - Cron: Disable (not needed)
+  - Email: Disable (not needed)
+
+────────────────────────────────────────────────────────────────────────────
+
+3.2 CLOUDFLARE PAGES ALTERNATIVE
+────────────────────────────────────────────────────────────────────────────
+
+TASK 3.2.1: Create Cloudflare Pages Project
+  - Project Name: botspace-dashboard
+  - Framework: React
+  - Build Command: pnpm build
+  - Build Output: dist/public
+  - Environment: Production
+
+TASK 3.2.2: Connect GitHub Repository
+  - Authorize GitHub app
+  - Select botspace-dashboard repository
+  - Select main branch for production
+  - Select develop branch for preview (optional)
+
+TASK 3.2.3: Configure Build Settings
+  - Node Version: 18.x
+  - Package Manager: pnpm
+  - Build Command: pnpm install && pnpm build
+  - Build Output Directory: dist/public
+  - Root Directory: / (default)
+
+TASK 3.2.4: Set Environment Variables
+  - BOTSPACE_CHANNEL_ID: 690c66ec2a221421bdc2b6d1
+  - BOTSPACE_API_KEY: botspace_5ed2f2b9-d7e2-444f-9dee-3411273c5848
+  - GEMINI_API_KEY: AIzaSyBDW85y2XgKnmeGJ2DSEX5qZZbQPW_Pri0
+  - VITE_ANALYTICS_ENDPOINT: (optional)
+  - VITE_ANALYTICS_WEBSITE_ID: (optional)
+
+TASK 3.2.5: Configure Custom Domain
+  - Domain: espacios.me
+  - Subdomain: botspace
+  - Full URL: espacios.me/botspace
+  - SSL: Automatic (Cloudflare managed)
+
+================================================================================
+PHASE 4: ROUTING & DNS CONFIGURATION
+================================================================================
+
+4.1 CLOUDFLARE ROUTING
+────────────────────────────────────────────────────────────────────────────
+
+TASK 4.1.1: Create Routing Rule
+  - Path: espacios.me/botspace
+  - Destination: Cloudflare Worker (botspace-dashboard)
+  - Method: GET, POST, PUT, DELETE, PATCH
+  - Priority: 100
+
+TASK 4.1.2: Configure Path Rewriting
+  - Incoming: /botspace/*
+  - Rewrite to: /*
+  - Preserve query string: Yes
+  - Preserve fragment: Yes
+
+TASK 4.1.3: Add Cache Rules
+  - Path: /botspace/assets/*
+  - Cache Level: Cache Everything
+  - Browser Cache TTL: 1 month
+  - Edge Cache TTL: 1 month
+
+TASK 4.1.4: Add Security Rules
+  - Path: /botspace/*
+  - Security Level: High
+  - Rate Limiting: 100 requests/minute per IP
+  - Bot Management: Enabled
+
+────────────────────────────────────────────────────────────────────────────
+
+4.2 DNS CONFIGURATION
+────────────────────────────────────────────────────────────────────────────
+
+TASK 4.2.1: Verify DNS Records
+  - A Record: espacios.me → Cloudflare IP
+  - CNAME: www.espacios.me → espacios.me
+  - MX Records: (if email is used)
+  - TXT Records: (SPF, DKIM, DMARC if email is used)
+
+TASK 4.2.2: Add DNS Records for Subdomain (if needed)
+  - CNAME: botspace.espacios.me → espacios.me
+  - TTL: 3600 (1 hour)
+  - Proxy: Cloudflare (orange cloud)
+
+TASK 4.2.3: Configure SSL/TLS
+  - Mode: Full (Strict)
+  - Minimum TLS Version: 1.2
+  - Always Use HTTPS: Enabled
+  - HSTS: Enabled (max-age=31536000)
+
+TASK 4.2.4: Verify DNS Propagation
+  - Check DNS propagation globally
+  - Verify espacios.me resolves correctly
+  - Test from multiple geographic locations
+
+================================================================================
+PHASE 5: DEPLOYMENT EXECUTION
+================================================================================
+
+5.1 INITIAL DEPLOYMENT
+────────────────────────────────────────────────────────────────────────────
+
+TASK 5.1.1: Prepare Repository
+  - Ensure all code is committed
+  - Create release branch: release/v1.0.0
+  - Update version in package.json
+  - Create CHANGELOG entry
+  - Create git tag: v1.0.0
+
+TASK 5.1.2: Trigger GitHub Actions
+  - Push release branch to GitHub
+  - GitHub Actions workflow starts automatically
+  - Monitor build job progress
+  - Monitor test job progress
+  - Monitor deploy job progress
+
+TASK 5.1.3: Verify Build Artifacts
+  - Check dist/public directory created
+  - Verify index.html exists
+  - Verify JavaScript bundles created
+  - Verify CSS files created
+  - Check bundle sizes are reasonable
+
+TASK 5.1.4: Monitor Deployment
+  - Watch GitHub Actions logs
+  - Check Cloudflare deployment status
+  - Verify Worker is deployed
+  - Check Cloudflare Pages build (if using Pages)
+
+TASK 5.1.5: Verify Deployment Success
+  - Deployment status: Success
+  - No build errors
+  - No deployment errors
+  - Worker is active and responding
+
+────────────────────────────────────────────────────────────────────────────
+
+5.2 POST-DEPLOYMENT TESTING
+────────────────────────────────────────────────────────────────────────────
+
+TASK 5.2.1: Smoke Tests
+  - Access espacios.me/botspace in browser
+  - Verify page loads without errors
+  - Check console for JavaScript errors
+  - Verify all assets load (CSS, JS, images)
+
+TASK 5.2.2: Functional Tests
+  - Dashboard loads and displays data
+  - Stats cards show correct values
+  - Charts render properly
+  - Conversations table displays data
+  - AI Insights component works
+
+TASK 5.2.3: API Integration Tests
+  - BotSpace API calls successful
+  - Conversations data fetches correctly
+  - Stats calculations accurate
+  - Gemini AI integration working
+  - Error handling works properly
+
+TASK 5.2.4: Performance Tests
+  - Page load time < 3 seconds
+  - Time to interactive < 5 seconds
+  - Lighthouse score > 80
+  - No console errors or warnings
+  - Network requests optimized
+
+TASK 5.2.5: Cross-Browser Testing
+  - Chrome: Test and verify
+  - Firefox: Test and verify
+  - Safari: Test and verify
+  - Edge: Test and verify
+  - Mobile browsers: Test and verify
+
+TASK 5.2.6: Responsive Design Testing
+  - Desktop (1920x1080): Verify layout
+  - Tablet (768x1024): Verify layout
+  - Mobile (375x667): Verify layout
+  - Check touch interactions work
+
+================================================================================
+PHASE 6: MONITORING & MAINTENANCE
+================================================================================
+
+6.1 MONITORING SETUP
+────────────────────────────────────────────────────────────────────────────
+
+TASK 6.1.1: Configure Cloudflare Analytics
+  - Enable Analytics Engine
+  - Track page views
+  - Track API calls
+  - Track error rates
+  - Track response times
+
+TASK 6.1.2: Set Up Error Tracking
+  - Enable Sentry (optional)
+  - Configure error notifications
+  - Set error thresholds
+  - Create error alerts
+
+TASK 6.1.3: Configure Performance Monitoring
+  - Enable Web Analytics
+  - Monitor Core Web Vitals
+  - Track page load times
+  - Track user interactions
+  - Set performance thresholds
+
+TASK 6.1.4: Create Monitoring Dashboard
+  - Uptime monitoring
+  - Error rate monitoring
+  - Performance metrics
+  - API response times
+  - User activity tracking
+
+────────────────────────────────────────────────────────────────────────────
+
+6.2 MAINTENANCE PROCEDURES
+────────────────────────────────────────────────────────────────────────────
+
+TASK 6.2.1: Regular Updates
+  - Check for dependency updates monthly
+  - Update security vulnerabilities immediately
+  - Test updates in development first
+  - Deploy updates via GitHub Actions
+
+TASK 6.2.2: Log Review
+  - Review Cloudflare logs weekly
+  - Check error logs for issues
+  - Monitor API rate limits
+  - Check for unusual traffic patterns
+
+TASK 6.2.3: Backup Procedures
+  - Backup GitHub repository (automatic)
+  - Export Cloudflare configuration monthly
+  - Document deployment procedures
+  - Keep disaster recovery plan updated
+
+TASK 6.2.4: Security Audits
+  - Run security scans monthly
+  - Check for exposed API keys
+  - Review access logs
+  - Update security policies
+
+================================================================================
+PHASE 7: ROLLBACK & DISASTER RECOVERY
+================================================================================
+
+7.1 ROLLBACK PROCEDURES
+────────────────────────────────────────────────────────────────────────────
+
+TASK 7.1.1: Identify Rollback Triggers
+  - Critical errors in production
+  - API integration failures
+  - Performance degradation > 50%
+  - Security vulnerabilities discovered
+  - Data loss or corruption
+
+TASK 7.1.2: Create Rollback Plan
+  - Previous version tagged in Git
+  - Previous deployment documented
+  - Rollback procedure documented
+  - Estimated rollback time: 5-10 minutes
+
+TASK 7.1.3: Implement Rollback Process
+  - Step 1: Identify issue and severity
+  - Step 2: Notify team members
+  - Step 3: Checkout previous git tag
+  - Step 4: Trigger deployment via GitHub Actions
+  - Step 5: Verify rollback successful
+  - Step 6: Post-mortem analysis
+
+TASK 7.1.4: Create Rollback Automation
+  - GitHub Actions workflow for rollback
+  - One-click rollback button (optional)
+  - Automated health checks post-rollback
+  - Notification on rollback completion
+
+────────────────────────────────────────────────────────────────────────────
+
+7.2 DISASTER RECOVERY
+────────────────────────────────────────────────────────────────────────────
+
+TASK 7.2.1: Document Disaster Scenarios
+  - Scenario 1: GitHub repository deleted
+  - Scenario 2: Cloudflare account compromised
+  - Scenario 3: API keys exposed
+  - Scenario 4: Complete data loss
+  - Scenario 5: DDoS attack
+
+TASK 7.2.2: Create Recovery Procedures
+  - Restore from GitHub backup
+  - Restore from Cloudflare backup
+  - Rotate API keys
+  - Restore from database backup
+  - Activate DDoS protection
+
+TASK 7.2.3: Test Disaster Recovery
+  - Simulate repository deletion
+  - Test key rotation process
+  - Test rollback procedure
+  - Document recovery time
+  - Update procedures based on findings
+
+================================================================================
+PHASE 8: OPTIMIZATION & SCALING
+================================================================================
+
+8.1 PERFORMANCE OPTIMIZATION
+────────────────────────────────────────────────────────────────────────────
+
+TASK 8.1.1: Code Optimization
+  - Implement code splitting
+  - Lazy load heavy libraries
+  - Optimize bundle size
+  - Remove unused dependencies
+  - Minify and compress assets
+
+TASK 8.1.2: Caching Strategy
+  - Implement browser caching
+  - Implement CDN caching
+  - Implement API response caching
+  - Use Cloudflare KV for caching
+  - Set appropriate cache TTLs
+
+TASK 8.1.3: Database Optimization (if applicable)
+  - Implement query optimization
+  - Add database indexes
+  - Implement connection pooling
+  - Monitor query performance
+  - Optimize slow queries
+
+TASK 8.1.4: API Optimization
+  - Implement request batching
+  - Reduce API call frequency
+  - Implement pagination
+  - Cache API responses
+  - Monitor API rate limits
+
+────────────────────────────────────────────────────────────────────────────
+
+8.2 SCALING CONSIDERATIONS
+────────────────────────────────────────────────────────────────────────────
+
+TASK 8.2.1: Horizontal Scaling
+  - Cloudflare Workers auto-scales
+  - No manual scaling needed
+  - Monitor usage metrics
+  - Plan for future growth
+
+TASK 8.2.2: Load Balancing
+  - Cloudflare provides global load balancing
+  - Automatic failover enabled
+  - Geographic routing configured
+  - Monitor load distribution
+
+TASK 8.2.3: Database Scaling (if applicable)
+  - Plan for database growth
+  - Implement read replicas
+  - Implement sharding strategy
+  - Monitor database performance
+
+================================================================================
+PHASE 9: DOCUMENTATION & HANDOFF
+================================================================================
+
+9.1 DOCUMENTATION
+────────────────────────────────────────────────────────────────────────────
+
+TASK 9.1.1: Create Deployment Documentation
+  - Step-by-step deployment guide
+  - Troubleshooting guide
+  - Emergency procedures
+  - Contact information
+
+TASK 9.1.2: Create Architecture Documentation
+  - System architecture diagram
+  - Data flow diagram
+  - Integration points
+  - External dependencies
+
+TASK 9.1.3: Create Operational Documentation
+  - Monitoring procedures
+  - Maintenance procedures
+  - Update procedures
+  - Backup procedures
+
+TASK 9.1.4: Create Developer Documentation
+  - Local development setup
+  - Testing procedures
+  - Debugging guide
+  - Code contribution guidelines
+
+────────────────────────────────────────────────────────────────────────────
+
+9.2 KNOWLEDGE TRANSFER
+────────────────────────────────────────────────────────────────────────────
+
+TASK 9.2.1: Team Training
+  - Deploy process walkthrough
+  - Monitoring dashboard overview
+  - Troubleshooting procedures
+  - Emergency response procedures
+
+TASK 9.2.2: Create Runbooks
+  - Deployment runbook
+  - Incident response runbook
+  - Rollback runbook
+  - Scaling runbook
+
+TASK 9.2.3: Establish On-Call Procedures
+  - Define on-call rotation
+  - Create escalation procedures
+  - Document alert thresholds
+  - Create incident response plan
+
+================================================================================
+DEPLOYMENT CHECKLIST
+================================================================================
+
+PRE-DEPLOYMENT:
+  ☐ GitHub repository created and configured
+  ☐ .gitignore and .env.example files created
+  ☐ Code pushed to GitHub main branch
+  ☐ Cloudflare account verified and active
+  ☐ Domain espacios.me configured in Cloudflare
+  ☐ Cloudflare API token created
+  ☐ GitHub Secrets configured
+  ☐ wrangler.toml created and configured
+  ☐ GitHub Actions workflow created
+  ☐ Environment variables set in GitHub Secrets
+
+DEPLOYMENT:
+  ☐ Create release branch and tag
+  ☐ Push to GitHub (triggers GitHub Actions)
+  ☐ Monitor build job
+  ☐ Monitor test job
+  ☐ Monitor deploy job
+  ☐ Verify deployment successful
+
+POST-DEPLOYMENT:
+  ☐ Access espacios.me/botspace in browser
+  ☐ Verify page loads without errors
+  ☐ Test dashboard functionality
+  ☐ Test API integrations
+  ☐ Run performance tests
+  ☐ Test cross-browser compatibility
+  ☐ Verify monitoring is working
+  ☐ Document deployment details
+
+================================================================================
+ESTIMATED TIMELINE
+================================================================================
+
+Phase 1 (Preparation): 2-4 hours
+Phase 2 (CI/CD Setup): 1-2 hours
+Phase 3 (Cloudflare Config): 1-2 hours
+Phase 4 (Routing & DNS): 1 hour
+Phase 5 (Deployment): 30 minutes - 1 hour
+Phase 6 (Monitoring): 1-2 hours
+Phase 7 (Rollback Plan): 1 hour
+Phase 8 (Optimization): 2-4 hours (ongoing)
+Phase 9 (Documentation): 2-3 hours
+
+TOTAL ESTIMATED TIME: 12-20 hours
+
+================================================================================
+DEPLOYMENT ARCHITECTURE DIAGRAM
+================================================================================
+
+GitHub Repository
+    ↓
+    ├─ Push to main branch
+    ↓
+GitHub Actions Workflow
+    ├─ Build Job
+    │  ├─ Checkout code
+    │  ├─ Install dependencies
+    │  ├─ Run type check
+    │  └─ Build project → dist/
+    │
+    ├─ Test Job
+    │  ├─ Verify build artifacts
+    │  ├─ Run smoke tests
+    │  └─ Validate output
+    │
+    └─ Deploy Job
+       ├─ Download artifacts
+       ├─ Install Wrangler
+       └─ Deploy to Cloudflare
+           ↓
+       Cloudflare Workers/Pages
+           ├─ Deploy to edge locations
+           ├─ Configure routes
+           └─ Enable caching
+               ↓
+           espacios.me/botspace
+               ├─ Route: /botspace/*
+               ├─ SSL/TLS: Enabled
+               ├─ Caching: Configured
+               └─ Monitoring: Active
+
+================================================================================
+SUCCESS CRITERIA
+================================================================================
+
+✓ Dashboard accessible at espacios.me/botspace
+✓ Page loads in < 3 seconds
+✓ All API integrations working
+✓ No console errors or warnings
+✓ Responsive design working on all devices
+✓ Cross-browser compatibility verified
+✓ Monitoring and alerts configured
+✓ Rollback procedure documented and tested
+✓ Team trained on deployment procedures
+✓ Documentation complete and accessible
+
+================================================================================
+END OF DEPLOYMENT PLAN
+================================================================================
+
+This plan provides a comprehensive roadmap for deploying the BotSpace Dashboard
+from GitHub to Cloudflare at espacios.me/botspace. Follow each phase in order
+and verify completion of all tasks before proceeding to the next phase.
+
+For questions or issues, refer to the documentation and troubleshooting guides.
+
+================================================================================

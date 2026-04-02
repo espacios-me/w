@@ -1,6 +1,45 @@
 {
-  "buildCommand": "bash build.sh",
-  "outputDirectory": "dist",
-  "cleanUrls": true,
-  "trailingSlash": false
+  "buildCommand": "pnpm build",
+  "installCommand": "pnpm install",
+  "outputDirectory": "dist/public",
+  "framework": "vite",
+  "nodeVersion": "18.x",
+  "env": {
+    "BOTSPACE_CHANNEL_ID": "@botspace_channel_id",
+    "BOTSPACE_API_KEY": "@botspace_api_key",
+    "GEMINI_API_KEY": "@gemini_api_key"
+  },
+  "routes": [
+    {
+      "src": "^/bot(/.*)?$",
+      "dest": "/index.html"
+    },
+    {
+      "src": "^/botspace(/.*)?$",
+      "status": 301,
+      "headers": {
+        "Location": "/bot"
+      }
+    },
+    {
+      "src": "^/assets/(.*)$",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "^/(.*)$",
+      "dest": "/index.html"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/bot",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/bot/:path*",
+      "destination": "/index.html"
+    }
+  ]
 }
