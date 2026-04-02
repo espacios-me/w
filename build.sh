@@ -10,5 +10,6 @@ cp espacios-terms.html "$OUT_DIR/espacios-terms.html"
 cp espacios-main.html "$OUT_DIR/index.html"
 cp sample.html "$OUT_DIR/sample.html"
 cp espacios-main.html "$OUT_DIR/sample.html"
+cp espacios-report.html "$OUT_DIR/report.html"
 
 echo "Built site into $OUT_DIR/"
