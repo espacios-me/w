@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sample Project Landing Page</title>
+  <style>
+    body{margin:0;font-family:Inter,system-ui;background:#0d1320;color:#fff}
+    .wrap{max-width:1200px;margin:0 auto;padding:24px}
+    .grid{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+    .card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:20px;overflow:hidden}
+    .hero{position:relative;min-height:420px;background-size:cover;background-position:center}
+    .overlay{position:absolute;inset:0;background:linear-gradient(to top,#08111f,transparent)}
+    .content{position:absolute;left:24px;right:24px;bottom:24px}
+    .chips span{display:inline-block;margin:4px;padding:8px 12px;border:1px solid rgba(255,255,255,.2);border-radius:999px;background:rgba(0,0,0,.3);font-size:12px}
+    .btn{display:inline-block;margin-top:12px;padding:10px 14px;border-radius:999px;background:#25D366;color:#fff;text-decoration:none;font-weight:700}
+    .list{padding:12px;display:grid;gap:10px}
+    .item{cursor:pointer;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.1)}
+    .item.active{background:rgba(255,255,255,.14)}
+    .sec{margin-top:16px;padding:16px}
+    .cols{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}.cols{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Sample Property Landing Page</h1>
+    <p>This standalone sample mirrors the React concept in a lightweight static page.</p>
+    <div class="grid">
+      <div>
+        <div class="card hero" id="hero">
+          <div class="overlay"></div>
+          <div class="content">
+            <h2 id="title"></h2>
+            <p id="location"></p>
+            <div class="chips" id="chips"></div>
+            <a id="wa" class="btn" target="_blank" rel="noopener">WhatsApp Nareen</a>
+          </div>
+        </div>
+        <div class="card sec">
+          <h3>Investor Snap</h3>
+          <div id="snap"></div>
+        </div>
+        <div class="card sec">
+          <h3>Area Snapshot</h3>
+          <div class="cols" id="area"></div>
+        </div>
+      </div>
+      <aside class="card">
+        <div class="sec"><h3>Other Projects</h3></div>
+        <div class="list" id="list"></div>
+      </aside>
+    </div>
+  </div>
+<script>
+const projects=[
+{id:1,title:'Mirage at The Oasis',location:'The Oasis, Dubailand',price:'AED 15.8M',plan:'90/10',handover:'Q2 2028',size:'10,225 – 12,967 sq.ft',hero:'https://cdn.opr.ae/photo/Oasis_Mirage.jpg',snap:['Value-entry vs wider Oasis 5BR medians.','Scarcity-led ultra-luxury villa story.'],area:{Schools:['South View School'],Hospitals:['NMC Royal Hospital'],Malls:['Circle Mall'],Recreation:['Trump International Golf Club']}},
+{id:2,title:'Address The Bay',location:'Emaar Beachfront, Dubai Harbour',price:'AED 3.323M',plan:'80/20',handover:'Q4 2026',size:'803 – 1,970 sq.ft',hero:'https://i.1.creatium.io/fc/a1/94/1fb95fdb5719498c9a4675c6fa615f78a5/1header.jpg',snap:['Branded waterfront resale narrative.','Strong beachfront demand in 1BR/2BR categories.'],area:{Schools:['Raffles Nursery Dubai Marina'],Hospitals:['Al Zahra Hospital'],Malls:['Dubai Marina Mall'],Recreation:['Private beach access']}},
+{id:3,title:'Elie Saab Villas',location:'Dubai Hills Estate',price:'AED 18M',plan:'60/40',handover:'Ready / By Phase',size:'5,500 – 6,500 sq.ft',hero:'https://437e81e1-5ed1-4d53-bed7-e6f8d97dcc9b.selcdn.net/47/ee/72/cb69ebbb564321739cc2076f27eaef2b93/1161x832q8/Header.jpg',snap:['Design-led product in proven district.','Strong capital preservation narrative.'],area:{Schools:['GEMS International School'],Hospitals:['King’s College Hospital'],Malls:['Dubai Hills Mall'],Recreation:['Dubai Hills Golf Club']}},
+{id:4,title:'Bayn by ORA',location:'Ghantoot',price:'From AED 2.75M',plan:'Flexible',handover:'Announced',size:'Multiple layouts',hero:'https://metropolitan.realestate/wp-content/uploads/2025/04/Bayn-by-Ora-1-1024x585.webp',snap:['First-mover coastal masterplan play.','Qualitative upside story for early buyers.'],area:{Schools:['Planned in community'],Hospitals:['Planned in community'],Malls:['On-site retail'],Recreation:['Private beach']}}
+];
+let active=0;
+const list=document.getElementById('list');
+function render(){
+ const p=projects[active];
+ document.getElementById('hero').style.backgroundImage=`url('${p.hero}')`;
+ document.getElementById('title').textContent=p.title;
+ document.getElementById('location').textContent=p.location;
+ document.getElementById('chips').innerHTML=`<span>${p.price}</span><span>${p.plan}</span><span>${p.handover}</span><span>${p.size}</span>`;
+ document.getElementById('wa').href=`https://wa.me/971559424193?text=${encodeURIComponent('Hi Nareen, I’m interested in '+p.title)}`;
+ document.getElementById('snap').innerHTML=p.snap.map(s=>`<p>• ${s}</p>`).join('');
+ document.getElementById('area').innerHTML=Object.entries(p.area).map(([k,v])=>`<div><strong>${k}</strong><p>${v.join(', ')}</p></div>`).join('');
+ list.innerHTML=projects.map((x,i)=>`<div class="item ${i===active?'active':''}" data-i="${i}"><strong>${x.title}</strong><div>${x.location}</div></div>`).join('');
+ list.querySelectorAll('.item').forEach(el=>el.onclick=()=>{active=+el.dataset.i;render();});
+}
+render();
+</script>
+</body>
+</html>
